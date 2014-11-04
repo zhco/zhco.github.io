@@ -1,0 +1,12 @@
+# Site settings
+title: "周大葱"
+email: "zhoucong50@gmail.com"
+description: > # this means to ignore newlines until "baseurl:"
+  上网成瘾，无法自拔。
+baseurl: "" # the subpath of your site, e.g. /blog/
+url: "http://zhco.github.io" # the base hostname & protocol for your site
+twitter_username: smaatin
+github_username:  zhco
+
+# Build settings
+markdown: kramdown
