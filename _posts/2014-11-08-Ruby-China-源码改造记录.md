@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Ruby China 源码改造记录
+title: "Ruby China 源码改造记录"
 published: True
 categories: jekyll update
 tags: []
