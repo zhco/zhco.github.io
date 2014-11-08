@@ -75,7 +75,7 @@ config/config.yml
 
 在Nginx的sites-available目录下新建配置文件your.site.domain，然后在文件中配置如下
 
-{% highlight %}
+{% highlight text %}
 upstream ruby-china {  
     server 127.0.0.1:7000;  
     server 127.0.0.1:7001;  
