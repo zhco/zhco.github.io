@@ -42,6 +42,17 @@ $ rvm use --install --default 2.1.4
 $ sudo apt-get install nodejs
 {% endhighlight %}
 
+## 安装ImageMagick
+图片处理的工具ImageMagick，与上传头像然后进行裁剪相关，依赖图片库libpng
+
+{% highlight bash %}
+$ sudo apt-get install libpng-dev
+{% endhighlight %}
+
+{% highlight bash %}
+$ sudo apt-get install imagemagick
+{% endhighlight %}
+
 ## 网站初始化安装
 在网站根目录执行
 
@@ -53,17 +64,6 @@ $ ./bin/setup
 
 {% highlight bash %}
 $ bundle install
-{% endhighlight %}
-
-## 安装ImageMagick
-图片处理的工具ImageMagick，与上传头像然后进行裁剪相关，依赖图片库libpng
-
-{% highlight bash %}
-$ sudo apt-get install libpng-dev
-{% endhighlight %}
-
-{% highlight bash %}
-$ sudo apt-get install imagemagick
 {% endhighlight %}
 
 ## ruby-china源码修改
