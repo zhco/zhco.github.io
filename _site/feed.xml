@@ -1,14 +1,73 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Your awesome title</title>
-    <description>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+    <title>Smatin</title>
+    <description>上网成瘾，无法自拔。
 </description>
-    <link>http://yourdomain.com/</link>
-    <atom:link href="http://yourdomain.com/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Wed, 05 Nov 2014 03:25:17 +0800</pubDate>
-    <lastBuildDate>Wed, 05 Nov 2014 03:25:17 +0800</lastBuildDate>
+    <link>http://zhco.github.io/</link>
+    <atom:link href="http://zhco.github.io/feed.xml" rel="self" type="application/rss+xml" />
+    <pubDate>Sat, 08 Nov 2014 20:41:54 +0800</pubDate>
+    <lastBuildDate>Sat, 08 Nov 2014 20:41:54 +0800</lastBuildDate>
     <generator>Jekyll v2.4.0</generator>
+    
+      <item>
+        <title>Ruby China 源码改造记录</title>
+        <description>&lt;h3 id=&quot;section&quot;&gt;安装环境&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;Ruby 2.1.3 +&lt;/li&gt;
+  &lt;li&gt;Memcached 1.4 +&lt;/li&gt;
+  &lt;li&gt;Redis 2.2 +&lt;/li&gt;
+  &lt;li&gt;MongoDb 2.4.4 +&lt;/li&gt;
+  &lt;li&gt;ImageMagick 6.5+&lt;/li&gt;
+  &lt;li&gt;libpng&lt;/li&gt;
+  &lt;li&gt;javascript runtime&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;启动服务&lt;/h2&gt;
+
+&lt;p&gt;启动app server，在根目录下，保证memcached和redis都已经开启&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;bundler &lt;span class=&quot;nb&quot;&gt;exec &lt;/span&gt;thin start -C config/thin.yml&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;开启sidekiq服务&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;bundler &lt;span class=&quot;nb&quot;&gt;exec &lt;/span&gt;sidekiq -C config/sidekiq.yml -e production -d -L log/sidekiq.log&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;开启faye服务，开启全站消息通知&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;start_faye_server&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;nginx&quot;&gt;Nginx配置&lt;/h2&gt;
+
+&lt;h2 id=&quot;rvm--ruby&quot;&gt;安装RVM &amp;amp; Ruby&lt;/h2&gt;
+
+&lt;p&gt;安装RVM，网上很多方法有问题&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\c&lt;/span&gt;url -sSL https://get.rvm.io &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; bash&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;使rvm生效，下面的代码取决于你的rvm安装目录&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;source&lt;/span&gt; ~/.rvm/scripts/rvm&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;用rvm安装ruby 2.1.4，并控制版本，这样会自动安装依赖包&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;rvm use --install --default 2.1.4&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;imagemagick&quot;&gt;安装ImageMagick&lt;/h2&gt;
+&lt;p&gt;图片处理的工具&lt;/p&gt;
+
+&lt;h2 id=&quot;ruby-china&quot;&gt;ruby-china源码修改&lt;/h2&gt;
+</description>
+        <pubDate>Sun, 09 Nov 2014 04:32:16 +0800</pubDate>
+        <link>http://zhco.github.io/jekyll/update/2014/11/09/Ruby-China-%E6%BA%90%E7%A0%81%E6%94%B9%E9%80%A0%E8%AE%B0%E5%BD%95.html</link>
+        <guid isPermaLink="true">http://zhco.github.io/jekyll/update/2014/11/09/Ruby-China-%E6%BA%90%E7%A0%81%E6%94%B9%E9%80%A0%E8%AE%B0%E5%BD%95.html</guid>
+        
+        
+        <category>jekyll</category>
+        
+        <category>update</category>
+        
+      </item>
     
       <item>
         <title>Welcome to Jekyll!</title>
@@ -28,8 +87,8 @@
 
 </description>
         <pubDate>Wed, 05 Nov 2014 11:18:26 +0800</pubDate>
-        <link>http://yourdomain.com/jekyll/update/2014/11/05/welcome-to-jekyll.html</link>
-        <guid isPermaLink="true">http://yourdomain.com/jekyll/update/2014/11/05/welcome-to-jekyll.html</guid>
+        <link>http://zhco.github.io/jekyll/update/2014/11/05/welcome-to-jekyll.html</link>
+        <guid isPermaLink="true">http://zhco.github.io/jekyll/update/2014/11/05/welcome-to-jekyll.html</guid>
         
         
         <category>jekyll</category>
