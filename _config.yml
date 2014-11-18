@@ -7,6 +7,8 @@ baseurl: "" # the subpath of your site, e.g. /blog/
 url: "http://zhco.github.io" # the base hostname & protocol for your site
 twitter_username: smaatin
 github_username:  zhco
+weibo_id: "778940201"
+weibo_name: "周大葱v"
 
 # Build settings
 markdown: kramdown

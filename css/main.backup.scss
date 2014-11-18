@@ -6,20 +6,20 @@
 
 
 // Our variables
-$base-font-family: Avenir, Helvetica, Hiragino Sans GB, Microsoft JHengHei, Microsoft Sans Serif, WenQuanYi Micro Hei, sans-serif;
+$base-font-family: Helvetica, Hiragino Sans GB, Microsoft JHengHei, Microsoft Sans Serif, WenQuanYi Micro Hei, sans-serif;
 $base-font-size:   16px;
 $small-font-size:  $base-font-size * 0.875;
 $base-font-weight: 400;
-$base-line-height: 1.8;
+$base-line-height: 1.5;
 
-$spacing-unit:     1.8em;
+$spacing-unit:     30px;
 
-$text-color:       #333;
-$background-color: #fff;
-$brand-color:      #1abc9c;
+$text-color:       #111;
+$background-color: #fdfdfd;
+$brand-color:      #2a7ae2;
 
-$grey-color:       #999;
-$grey-color-light: lighten($grey-color, 35%);
+$grey-color:       #828282;
+$grey-color-light: lighten($grey-color, 40%);
 $grey-color-dark:  darken($grey-color, 25%);
 
 $on-palm:          600px;

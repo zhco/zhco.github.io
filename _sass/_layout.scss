@@ -107,6 +107,10 @@
     margin-left: 0;
 }
 
+.social-media-list .username {
+    vertical-align: middle;
+}
+
 .footer-col-wrapper {
     font-size: 15px;
     color: $grey-color;
@@ -166,15 +170,24 @@
 }
 
 .page-heading {
-    font-size: 20px;
+    margin-bottom: 0;
+    border-bottom: 3px double #e8e8e8;
+    font-size: 1.3em;
+    line-height: 1.8;
 }
 
 .post-list {
     margin-left: 0;
+    padding: 0.5em 1em;
     list-style: none;
 
     > li {
-        margin-bottom: $spacing-unit;
+        margin: $spacing-unit 0;
+    }
+
+    h2 {
+        margin-bottom: 0;
+        line-height: 1;
     }
 }
 
@@ -195,42 +208,74 @@
  */
 .post-header {
     margin-bottom: $spacing-unit;
+    border-bottom: 3px double #e8e8e8;
 }
 
 .post-title {
-    font-size: 42px;
+    font-size: 2em;
     letter-spacing: -1px;
     line-height: 1;
 
     @include media-query($on-laptop) {
-        font-size: 36px;
+        font-size: 2em;
     }
 }
 
 .post-content {
-    margin-bottom: $spacing-unit;
+    padding-bottom: $spacing-unit/2;
+    border-bottom: 3px double #e8e8e8;
 
     h2 {
-        font-size: 32px;
+        font-size: 1.8em;
 
         @include media-query($on-laptop) {
-            font-size: 28px;
+            font-size: 1.8em;
         }
     }
 
     h3 {
-        font-size: 26px;
+        font-size: 1.6em;
 
         @include media-query($on-laptop) {
-            font-size: 22px;
+            font-size: 1.6em;
         }
     }
 
     h4 {
-        font-size: 20px;
+        font-size: 1.4em;
 
         @include media-query($on-laptop) {
-            font-size: 18px;
+            font-size: 1.4em;
         }
     }
+
+    h5, h6 {
+        font-size: 1.2em;
+
+        @include media-query($on-laptop) {
+            font-size: 1.2em;
+        }
+    }
+
+    /* 在文章中，应该还原 ul 和 ol 的样式 */
+    ul {
+      margin-left: 1.3em;
+      list-style: square;
+    }
+
+    ol {
+      list-style: decimal;
+      margin-left: 1.9em;
+    }
+
+    li ul, li ol, ul ul, ul ol, ol ul, ol ol{
+      margin-top: 0;
+      margin-bottom: 0;
+      margin-left: 1em;
+    }
+
+    li ul, ul ul, ol ul{
+      list-style: circle;
+    }
+
 }

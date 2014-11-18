@@ -8,21 +8,25 @@ dl, dd, ol, ul, figure {
     padding: 0;
 }
 
-
-
 /**
  * Basic styling
  */
-body {
+html {
+  color: $text-color;
+  background: $background-color;
+  -webkit-text-size-adjust:100%;
+  -ms-text-size-adjust:100%;
+  text-rendering:optimizelegibility;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: grayscale;
+}
+
+body, button, input, select, textarea {
     font-family: $base-font-family;
     font-size: $base-font-size;
     line-height: $base-line-height;
-    font-weight: 300;
-    color: $text-color;
-    background-color: $background-color;
-    -webkit-text-size-adjust: 100%;
+    font-weight: $base-font-weight;
 }
-
 
 
 /**
@@ -80,7 +84,10 @@ li {
  * Headings
  */
 h1, h2, h3, h4, h5, h6 {
-    font-weight: 300;
+  margin-bottom:0.4em;
+  line-height:1.5;
+  font-weight:200;
+  color:#000;
 }
 
 
@@ -97,7 +104,7 @@ a {
     }
 
     &:hover {
-        color: $text-color;
+        color: darken($brand-color, 5%);
         text-decoration: underline;
     }
 }
@@ -109,12 +116,13 @@ a {
  */
 blockquote {
     color: $grey-color;
-    border-left: 4px solid $grey-color-light;
-    padding-left: $spacing-unit / 2;
-    font-size: 18px;
-    letter-spacing: -1px;
-    font-style: italic;
-
+    // border-left: 4px solid $grey-color-light;
+    // padding-left: $spacing-unit / 2;
+    // font-size: 18px;
+    font-weight:300;
+    border-left:1px solid #1abc9c;
+    padding-left:1em;
+    margin:1em 3em 1em 1em;
     > :last-child {
         margin-bottom: 0;
     }
@@ -127,25 +135,36 @@ blockquote {
  */
 pre,
 code {
-    font-size: 15px;
-    border: 1px solid $grey-color-light;
+    font-size: 14px;
+    // border: 1px solid $grey-color-light;
     border-radius: 3px;
-    background-color: #eef;
+    background-color: #f8f8f8;
 }
 
 code {
     padding: 1px 5px;
+    background-color: lighten($brand-color, 50%);
 }
 
 pre {
-    padding: 8px 12px;
+    padding: 0.8em 1.5em;
     overflow-x: scroll;
 
     > code {
         border: 0;
         padding-right: 0;
         padding-left: 0;
+        background: transparent;
     }
+}
+
+hr{
+  border:none;
+  border-bottom:1px solid #cfcfcf;
+  margin-bottom:10px;
+  *color:pink; *filter:chroma(color=pink);
+  height:10px;
+  *margin:-7px 0 2px;
 }
 
 
@@ -202,3 +221,14 @@ pre {
         }
     }
 }
+
+::-moz-selection{
+  background: $brand-color;
+  color: #fff;
+}
+
+::selection{
+  background: $brand-color;
+  color: #fff;
+}
+
