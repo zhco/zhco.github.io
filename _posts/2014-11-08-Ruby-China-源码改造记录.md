@@ -2,7 +2,7 @@
 layout: post
 title: "Ruby China 源码改造记录"
 published: True
-categories: program ruby
+categories: 搞技术
 tags: ["ruby", "折腾", "program"]
 date: 2014-11-08 20:32:16
 ---
