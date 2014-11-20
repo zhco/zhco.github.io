@@ -365,6 +365,10 @@ hr {
     margin-left: 1em; }
   .post-content li ul, .post-content ul ul, .post-content ol ul {
     list-style: circle; }
+  .post-content img {
+    display: block;
+    max-width: 100%;
+    margin: 1em auto; }
 
 /**
  * Syntax highlighting styles
