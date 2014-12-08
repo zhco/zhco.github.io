@@ -105,7 +105,8 @@ a {
 
     &:hover {
         color: darken($brand-color, 5%);
-        text-decoration: underline;
+        border: none;
+        border-bottom: 1px solid;
     }
 }
 
@@ -142,6 +143,7 @@ code {
 }
 
 code {
+    margin: 0 2px;
     padding: 1px 5px;
     background-color: lighten($brand-color, 50%);
 }

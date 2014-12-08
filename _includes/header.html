@@ -4,8 +4,9 @@
 
     <!-- <a href="{{ site.baseurl }}" class="site-avatar"><img src="" alt=""></a> -->
     <a class="site-title" href="{{ site.baseurl }}/">{{ site.title }}</a>
-    <!-- <p class="site-slogan">{{ site.slogan }}</p> -->
-
+    <div class="site-description">
+      {{ site.description }}
+    </div>
     <nav class="site-nav">
       <a href="#" class="menu-icon">
         <svg viewBox="0 0 18 15">
@@ -21,6 +22,7 @@
           <a class="page-link" href="{{ page.url | prepend: site.baseurl }}">{{ page.title }}</a>
           {% endif %}
         {% endfor %}
+        <a class="page-link" target="_blank" href="{{ '/feed.xml' | prepend: site.baseurl }}">Rss</a>
       </div>
     </nav>
 
