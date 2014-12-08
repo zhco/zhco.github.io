@@ -22,11 +22,10 @@
     line-height: 1.8;
     letter-spacing: -1px;
     margin-bottom: 0;
-    float: left;
 
     &,
     &:visited {
-        color: $grey-color-dark;
+        color: #fff;
     }
 
     &:hover {
@@ -59,49 +58,49 @@
         }
     }
 
-//    @include media-query($on-palm) {
-//        position: absolute;
-//        top: 9px;
-//        right: 30px;
-//        background-color: $background-color;
-//        border: 1px solid $grey-color-light;
-//        border-radius: 5px;
-//        text-align: right;
-//
-//        .menu-icon {
-//            display: block;
-//            float: right;
-//            width: 36px;
-//            height: 26px;
-//            line-height: 0;
-//            padding-top: 10px;
-//            text-align: center;
-//
-//            > svg {
-//                width: 18px;
-//                height: 15px;
-//
-//                path {
-//                    fill: $grey-color-dark;
-//                }
-//            }
-//        }
-//
-//        .trigger {
-//            clear: both;
-//            display: none;
-//        }
-//
-//        &:hover .trigger {
-//            display: block;
-//            padding-bottom: 5px;
-//        }
-//
-//        .page-link {
-//            display: block;
-//            padding: 5px 10px;
-//        }
-//    }
+    // @include media-query($on-palm) {
+    //     position: absolute;
+    //     top: 9px;
+    //     right: 30px;
+    //     background-color: $background-color;
+    //     border: 1px solid $grey-color-light;
+    //     border-radius: 5px;
+    //     text-align: right;
+
+    //     .menu-icon {
+    //         display: block;
+    //         float: right;
+    //         width: 36px;
+    //         height: 26px;
+    //         line-height: 0;
+    //         padding-top: 10px;
+    //         text-align: center;
+
+    //         > svg {
+    //             width: 18px;
+    //             height: 15px;
+
+    //             path {
+    //                 fill: $grey-color-dark;
+    //             }
+    //         }
+    //     }
+
+    //     .trigger {
+    //         clear: both;
+    //         display: none;
+    //     }
+
+    //     &:hover .trigger {
+    //         display: block;
+    //         padding-bottom: 5px;
+    //     }
+
+    //     .page-link {
+    //         display: block;
+    //         padding: 5px 10px;
+    //     }
+    // }
 }
 
 
@@ -167,6 +166,8 @@
 .page-content {
     margin-top: 9.3em;
     padding: $spacing-unit 0;
+    background-color: #fff;
+    box-shadow: 0 -10px 10px -10px rgba(138, 74, 30, 0.4);
 }
 
 .page-heading {
@@ -260,23 +261,23 @@
 
     /* 在文章中，应该还原 ul 和 ol 的样式 */
     ul {
-      margin-left: 1.3em;
-      list-style: square;
+        margin-left: 1.3em;
+        list-style: square;
     }
 
     ol {
-      list-style: decimal;
-      margin-left: 1.9em;
+        list-style: decimal;
+        margin-left: 1.9em;
     }
 
     li ul, li ol, ul ul, ul ol, ol ul, ol ol{
-      margin-top: 0;
-      margin-bottom: 0;
-      margin-left: 1em;
+        margin-top: 0;
+        margin-bottom: 0;
+        margin-left: 1em;
     }
 
     li ul, ul ul, ol ul{
-      list-style: circle;
+        list-style: circle;
     }
 
     img {
