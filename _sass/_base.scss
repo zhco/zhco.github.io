@@ -17,8 +17,8 @@ html {
   -webkit-text-size-adjust:100%;
   -ms-text-size-adjust:100%;
   text-rendering:optimizelegibility;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-font-smoothing: grayscale;
+  -moz-osx-font-smoothing: antialiased;
+  -webkit-font-smoothing: antialiased;
 }
 
 body, button, input, select, textarea {
