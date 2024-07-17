@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>图片验证码生成示例</title>
+    <style>
+        canvas { border: 1px solid #ccc; }
+    </style>
+</head>
+<body>
+
+    <canvas id="captchaCanvas" width="120" height="40"></canvas>
+    <button onclick="generateCaptcha()">生成验证码</button>
+
+    <script>
+        function generateCaptcha() {
+            const canvas = document.getElementById('captchaCanvas');
+            const ctx = canvas.getContext('2d');
+
+            // 清空画布
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 随机生成字符串
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let captchaText = '';
+            for (let i = 0; i < 6; i++) {
+                captchaText += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+
+            // 设置字体样式
+            ctx.font = '30px Arial';
+
+            // 生成背景噪点
+            for (let i = 0; i < 50; i++) {
+                ctx.fillStyle = `rgb(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255})`;
+                ctx.fillRect(Math.random() * canvas.width, Math.random() * canvas.height, 2, 2);
+            }
+
+            // 绘制验证码文本
+            ctx.fillStyle = '#000';
+            ctx.fillText(captchaText, 10, 30);
+
+            // 添加线条干扰
+            for (let i = 0; i < 3; i++) {
+                ctx.beginPath();
+                ctx.moveTo(Math.random() * canvas.width, Math.random() * canvas.height);
+                ctx.lineTo(Math.random() * canvas.width, Math.random() * canvas.height);
+                ctx.strokeStyle = `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.5)`;
+                ctx.stroke();
+            }
+
+            // 可选：显示或处理验证码文本
+            console.log('Generated Captcha Text:', captchaText);
+        }
+
+        // 页面加载时生成一次验证码
+        window.onload = generateCaptcha;
+    </script>
+
+</body>
+</html>
