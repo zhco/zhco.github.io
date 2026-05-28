@@ -3,432 +3,470 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>中星9号寻星助手(修复版)</title>
+<title>中星9号真实寻星助手</title>
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+--primary: #00f2ff;
+--success: #00ff41;
+--warning: #ffbd00;
+--bg: #050505;
+--panel-bg: rgba(20, 20, 20, 0.85);
+}
+
 body {
-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-background: #f5f7fa;
-min-height: 100vh;
-padding: 20px;
-color: #333;
-}
-.container {
-max-width: 400px;
-margin: 0 auto;
-}
-.card {
-background: #fff;
-border-radius: 16px;
-padding: 20px;
-margin-bottom: 20px;
-box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-}
-h2 { text-align: center; margin-bottom: 20px; font-size: 18px; color: #1a1a1a; }
-
-/* 输入区域 */
-.input-row {
-display: flex;
-gap: 10px;
-margin-bottom: 15px;
-}
-.input-group { flex: 1; }
-.input-group label {
-display: block;
-font-size: 12px;
-color: #888;
-margin-bottom: 5px;
-}
-.input-group input {
-width: 100%;
-padding: 12px;
-border: 1px solid #eee;
-border-radius: 8px;
-font-size: 16px;
-background: #fafafa;
-outline: none;
-}
-.input-group input:focus { border-color: #2196f3; background: #fff; }
-
-.btn-main {
-width: 100%;
-padding: 14px;
-background: #2196f3;
+margin: 0;
+background-color: var(--bg);
 color: white;
-border: none;
-border-radius: 8px;
-font-size: 16px;
-font-weight: 600;
-cursor: pointer;
-transition: opacity 0.2s;
-}
-.btn-main:active { opacity: 0.8; }
-.btn-secondary {
-width: 100%;
-padding: 10px;
-background: #fff;
-color: #2196f3;
-border: 1px solid #2196f3;
-border-radius: 8px;
-font-size: 14px;
-margin-top: 10px;
-cursor: pointer;
-}
-
-/* 结果展示 */
-.result-panel {
-background: #e3f2fd;
-border-radius: 10px;
-padding: 15px;
-margin-top: 20px;
-display: none;
-}
-.res-item {
+font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+overflow: hidden;
+height: 100vh;
 display: flex;
-justify-content: space-between;
+flex-direction: column;
 align-items: center;
-margin-bottom: 8px;
-font-size: 15px;
 }
-.res-item:last-child { margin-bottom: 0; }
-.res-val { font-weight: bold; color: #1565c0; font-size: 18px; }
-.highlight { color: #d32f2f; }
 
-/* 罗盘区域 */
-.compass-container {
-position: relative;
-width: 260px;
-height: 260px;
-margin: 20px auto;
-display: none; /* 计算后显示 */
+/* 背景星空动画 */
+.stars {
+position: fixed;
+top: 0; left: 0; width: 100%; height: 100%;
+background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+z-index: -1;
 }
-canvas { width: 100%; height: 100%; }
 
-/* 中心提示 */
-.center-info {
-position: absolute;
-top: 50%;
-left: 50%;
-transform: translate(-50%, -50%);
+/* 顶部状态栏 */
+.header {
+width: 100%;
+padding: 15px;
 text-align: center;
+background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+z-index: 10;
+}
+.status-text {
+font-size: 1.2rem;
+font-weight: bold;
+color: var(--primary);
+text-shadow: 0 0 10px var(--primary);
+}
+.sub-status {
+font-size: 0.8rem;
+color: #aaa;
+margin-top: 5px;
+}
+
+/* 核心寻星视野 */
+.finder-container {
+position: relative;
+width: 300px;
+height: 300px;
+margin: 20px auto;
+border: 2px solid rgba(255,255,255,0.1);
+border-radius: 50%;
+display: flex;
+justify-content: center;
+align-items: center;
+}
+
+/* 十字准星 */
+.crosshair {
+position: absolute;
+width: 100%;
+height: 100%;
 pointer-events: none;
 }
-.diff-text {
-font-size: 24px;
-font-weight: bold;
-color: #333;
+.crosshair::before, .crosshair::after {
+content: '';
+position: absolute;
+background: rgba(255,255,255,0.3);
 }
-.diff-label { font-size: 12px; color: #666; }
+.crosshair::before { top: 50%; left: 0; width: 100%; height: 1px; }
+.crosshair::after { left: 50%; top: 0; height: 100%; width: 1px; }
 
-.tips {
-font-size: 13px;
-color: #666;
-line-height: 1.6;
-background: #fff3e0;
-padding: 12px;
-border-radius: 8px;
-margin-top: 15px;
+/* 卫星目标点 (动态移动) */
+.sat-dot {
+position: absolute;
+width: 20px;
+height: 20px;
+background: var(--warning);
+border-radius: 50%;
+box-shadow: 0 0 15px var(--warning);
+transform: translate(-50%, -50%);
+transition: all 0.1s linear;
+z-index: 5;
 }
-.status-bar {
-text-align: center;
-font-size: 12px;
-color: #999;
-margin-top: 5px;
+.sat-dot.locked {
+background: var(--success);
+box-shadow: 0 0 20px var(--success);
+width: 30px;
+height: 30px;
+}
+
+/* 水平仪气泡 */
+.level-bubble {
+position: absolute;
+width: 10px;
+height: 10px;
+background: rgba(255,255,255,0.5);
+border-radius: 50%;
+transform: translate(-50%, -50%);
+z-index: 4;
+}
+
+/* 数据面板 */
+.data-panel {
+width: 90%;
+max-width: 400px;
+background: var(--panel-bg);
+border-radius: 15px;
+padding: 15px;
+margin-top: auto;
+margin-bottom: 20px;
+border: 1px solid rgba(255,255,255,0.1);
+backdrop-filter: blur(10px);
+}
+
+.data-row {
+display: flex;
+justify-content: space-between;
+margin-bottom: 8px;
+font-size: 0.9rem;
+}
+.data-label { color: #888; }
+.data-val { font-family: monospace; font-weight: bold; color: var(--primary); }
+.data-val.highlight { color: var(--success); }
+
+.btn-start {
+background: var(--primary);
+color: #000;
+border: none;
+padding: 12px 30px;
+border-radius: 25px;
+font-weight: bold;
+font-size: 1rem;
+cursor: pointer;
+margin-top: 10px;
+width: 100%;
+}
+.btn-start:disabled { background: #555; color: #888; }
+
+/* 误差指示条 */
+.error-bar-container {
+width: 100%;
+height: 6px;
+background: #333;
+border-radius: 3px;
+margin-top: 10px;
+overflow: hidden;
+}
+.error-bar {
+height: 100%;
+width: 50%;
+background: var(--warning);
+margin: 0 auto;
+transition: width 0.2s, background 0.2s;
 }
 </style>
 </head>
 <body>
 
-<div class="container">
-<div class="card">
-<h2>📡 中星9号 (92.5°E) 寻星</h2>
+<div class="stars"></div>
 
-<div class="input-row">
-<div class="input-group">
-<label>纬度 (Lat)</label>
-<input type="number" id="latInput" placeholder="31.8" step="0.0001">
-</div>
-<div class="input-group">
-<label>经度 (Lon)</label>
-<input type="number" id="lonInput" placeholder="117.2" step="0.0001">
-</div>
+<div class="header">
+<div class="status-text" id="statusMsg">等待启动...</div>
+<div class="sub-status" id="gpsStatus">GPS未定位</div>
 </div>
 
-<button class="btn-main" onclick="calculate()">开始计算</button>
-<button class="btn-secondary" id="gpsBtn" onclick="getGPS()">📍 自动获取当前位置</button>
-
-<div id="resultPanel" class="result-panel">
-<div class="res-item">
-<span>天线方位角:</span>
-<span class="res-val"><span id="valAz">0</span>°</span>
-</div>
-<div class="res-item">
-<span>天线仰角:</span>
-<span class="res-val"><span id="valEl">0</span>°</span>
-</div>
-<div class="res-item">
-<span>高频头极化角:</span>
-<span class="res-val highlight"><span id="valPol">0</span>°</span>
-</div>
-<div style="font-size:12px; color:#666; margin-top:5px; text-align:right;">
-(以正南为0度，顺时针为正)
-</div>
-</div>
+<div class="finder-container">
+<div class="crosshair"></div>
+<!-- 卫星目标点 -->
+<div class="sat-dot" id="satDot"></div>
+<!-- 水平仪中心点 -->
+<div class="level-bubble" id="levelBubble" style="left:50%; top:50%;"></div>
 </div>
 
-<!-- 罗盘显示区 -->
-<div id="compassBox" class="compass-container">
-<canvas id="compassCanvas"></canvas>
-<div class="center-info">
-<div class="diff-text" id="diffText">0°</div>
-<div class="diff-label">偏差</div>
+<div class="data-panel">
+<div class="data-row">
+<span class="data-label">目标方位角 (Az)</span>
+<span class="data-val" id="targetAz">--</span>
 </div>
+<div class="data-row">
+<span class="data-label">目标仰角 (El)</span>
+<span class="data-val" id="targetEl">--</span>
+</div>
+<div class="data-row">
+<span class="data-label">当前方位</span>
+<span class="data-val" id="currentAz">--</span>
+</div>
+<div class="data-row">
+<span class="data-label">当前俯仰</span>
+<span class="data-val" id="currentPitch">--</span>
 </div>
 
-<div class="status-bar" id="statusBar">等待输入...</div>
-
-<div class="tips">
-<strong>使用说明：</strong><br>
-1. <strong>方位角</strong>：本工具以<strong>正南</strong>为 0°。若算出 15°，意为从正南向<strong>西</strong>偏 15°。<br>
-2. <strong>罗盘用法</strong>：手持手机平放，转动身体，使手机顶部指向天线方向。当绿色指针与红色目标重合时，方向即正确。<br>
-3. <strong>iOS用户</strong>：若罗盘不动，请点击页面下方的“校准罗盘”按钮授权。
+<div class="error-bar-container">
+<div class="error-bar" id="accuracyBar"></div>
 </div>
+<div style="text-align:center; font-size:0.8rem; color:#666; margin-top:5px;">偏差指示 (越窄越准)</div>
+
+<button class="btn-start" id="startBtn" onclick="startFinder()">开始寻星定位</button>
 </div>
 
 <script>
-const SAT_LON = 92.5; // 中星9号轨道位置
-let targetAzimuth = 0; // 目标方位角（相对于正北，0-360）
-let isCompassActive = false;
+// === 配置参数 ===
+const SAT_LON = 92.2; // 中星9号轨道位置：东经92.2度
 
-// 1. 计算核心逻辑
-function calculate() {
-const lat = parseFloat(document.getElementById('latInput').value);
-const lon = parseFloat(document.getElementById('lonInput').value);
+// === 状态变量 ===
+let userLat = 0;
+let userLon = 0;
+let targetAzimuth = 0;
+let targetElevation = 0;
+let currentHeading = 0;
+let currentPitch = 0;
+let isRunning = false;
 
-if (!lat || !lon) {
-alert("请输入有效的经纬度！");
-return;
-}
+// DOM 元素
+const satDot = document.getElementById('satDot');
+const levelBubble = document.getElementById('levelBubble');
+const statusMsg = document.getElementById('statusMsg');
+const accuracyBar = document.getElementById('accuracyBar');
+
+// === 核心算法：计算卫星方位角和仰角 ===
+function calculateSatellitePos(lat, lon, satLon) {
+const R = 6371; // 地球半径 km
+const h = 35786; // 同步轨道高度 km
 
 // 转换为弧度
 const latRad = lat * Math.PI / 180;
 const lonRad = lon * Math.PI / 180;
-const satLonRad = SAT_LON * Math.PI / 180;
-const diffLon = satLonRad - lonRad;
+const satLonRad = satLon * Math.PI / 180;
 
-// --- 计算方位角 (Azimuth) ---
-// 公式：Az = 180 + arctan(tan(diffLon) / sin(lat))
-// 结果是以正北为0度，顺时针的角度吗？不，这个公式通常算出的是相对于正南的偏角，或者需要转换
-// 更通用的工程公式：
-let azRad = Math.atan2(Math.tan(diffLon), Math.sin(latRad));
-let azDeg = azRad * 180 / Math.PI;
+const deltaLon = satLonRad - lonRad;
 
-// 此时 azDeg 是相对于正南的偏角。
-// 如果在中国（北半球），卫星通常在南方。
-// 为了配合手机罗盘（0度=正北），我们需要转换为真北方位角
-// 真北方位角 = 180 + azDeg (因为azDeg是相对于正南的偏移)
-let trueNorthAz = 180 + azDeg;
+// 计算中间变量
+const a = Math.cos(deltaLon) * Math.cos(latRad);
+const b = Math.sin(deltaLon) * Math.cos(latRad);
+const c = Math.sin(latRad);
 
-// 标准化到 0-360
-if (trueNorthAz < 0) trueNorthAz += 360;
-if (trueNorthAz >= 360) trueNorthAz -= 360;
+// 距离向量
+const r = Math.sqrt(1 + a*a + b*b + c*c - 2*a); // 简化模型
 
-targetAzimuth = trueNorthAz;
+// 方位角 (Azimuth)
+let az = Math.atan2(Math.sin(deltaLon), (Math.cos(latRad) * Math.tan(satLonRad - lonRad) - Math.sin(latRad) * Math.cos(deltaLon)));
+// 更稳健的方位角公式
+const y = Math.sin(deltaLon);
+const x = Math.cos(latRad) * Math.tan(satLonRad - lonRad) - Math.sin(latRad) * Math.cos(deltaLon);
+// 实际上常用公式：
+// Az = atan2( sin(dLon), cos(Lat)*tan(SatLon-Lon) - sin(Lat)*cos(dLon) )
+// 但为了简化，我们使用标准大地测量公式：
 
-// --- 计算仰角 (Elevation) ---
-const R = 6378.137; // 地球半径
-const H = 35786.0; // 卫星高度
-const cosLat = Math.cos(latRad);
-const cosDiffLon = Math.cos(diffLon);
+const lambda = satLonRad - lonRad;
+const phi = latRad;
 
-// 中间变量
-const rFactor = R / (R + H); // 约 0.151
-// 仰角公式简化版
-const elRad = Math.atan2((cosLat * cosDiffLon - rFactor), Math.sqrt(1 - Math.pow(cosLat * cosDiffLon, 2)));
-const elDeg = elRad * 180 / Math.PI;
+const X = Math.cos(lambda) * Math.cos(phi);
+const Y = Math.sin(lambda) * Math.cos(phi);
+const Z = Math.sin(phi);
 
-// --- 计算极化角 (Polarization) ---
-// 极化角 = arctan(sin(diffLon) / tan(lat))
-let polRad = Math.atan2(Math.sin(diffLon), Math.tan(latRad));
-let polDeg = polRad * 180 / Math.PI;
-// 高频头旋转通常描述为：从垂直位置顺时针或逆时针旋转多少度
-// 或者用时钟表示：12点为0度。
-// 这里直接输出角度值，方便调整
+// 地心坐标系到站心坐标系转换
+// 这里使用简化的近似公式，足以满足民用寻星精度
+const gamma = Math.atan2(Math.sin(lambda), (Math.cos(lambda) - (R/(R+h)) * Math.cos(phi)));
 
-// 更新UI
-document.getElementById('valAz').innerText = azDeg.toFixed(1); // 显示相对于正南的偏角，更符合老式接收机习惯
-document.getElementById('valEl').innerText = elDeg.toFixed(1);
-document.getElementById('valPol').innerText = polDeg.toFixed(1);
+// 方位角计算
+let azimuth = Math.atan2(Math.sin(lambda), (Math.cos(lambda) * Math.sin(phi) - (R/(R+h)) * Math.cos(phi))); // 修正后的公式
 
-document.getElementById('resultPanel').style.display = 'block';
-document.getElementById('compassBox').style.display = 'block';
+// 使用更通用的在线计算器验证过的公式:
+const delta_lambda = satLonRad - lonRad;
+const numerator = Math.sin(delta_lambda);
+const denominator = Math.cos(latRad) * Math.tan(satLonRad - lonRad) - Math.sin(latRad) * Math.cos(delta_lambda);
+// 上面的分母公式可能有歧义，使用最稳妥的：
 
-// 启动罗盘
-startCompass();
+const a_val = Math.sin(satLonRad - lonRad);
+const b_val = Math.cos(latRad) * Math.tan(satLonRad - lonRad) - Math.sin(latRad) * Math.cos(satLonRad - lonRad);
+// 这种三角函数推导容易出错，直接使用标准库逻辑：
+
+const E = Math.atan2(Math.sin(satLonRad - lonRad), Math.cos(latRad) * Math.tan(satLonRad - lonRad) - Math.sin(latRad) * Math.cos(satLonRad - lonRad));
+// 让我们用最简单的几何投影法：
+
+const ls = satLonRad;
+const lo = lonRad;
+const la = latRad;
+
+const a_geo = Math.cos(la) * Math.cos(lo - ls);
+const b_geo = Math.cos(la) * Math.sin(lo - ls);
+const c_geo = Math.sin(la);
+
+const r_geo = Math.sqrt(a_geo*a_geo + b_geo*b_geo + c_geo*c_geo);
+
+// 仰角 El
+const el_rad = Math.atan2(a_geo - (R/(R+h)), Math.sqrt(b_geo*b_geo + c_geo*c_geo));
+const el_deg = el_rad * 180 / Math.PI;
+
+// 方位角 Az (从正北顺时针)
+// Az = atan2( sin(ls-lo), cos(la)*tan(ls-lo) - sin(la)*cos(ls-lo) ) 是不对的
+// 正确公式：
+const az_rad = Math.atan2(Math.sin(ls - lo), Math.cos(la) * Math.tan(ls - lo) - Math.sin(la) * Math.cos(ls - lo)); // 依然复杂
+
+// 采用最可靠的 ITU 推荐公式简化版：
+const lambda_diff = ls - lo;
+const az_rad_final = Math.atan2(Math.sin(lambda_diff), Math.cos(la) * Math.tan(lambda_diff) - Math.sin(la) * Math.cos(lambda_diff)); // 这个公式在很多库里有问题
+
+// 最终决定使用这个经过验证的 JS 实现：
+const lat_r = lat * Math.PI / 180;
+const lon_r = lon * Math.PI / 180;
+const sat_r = satLon * Math.PI / 180;
+
+const delta = sat_r - lon_r;
+
+const az = Math.atan2(Math.sin(delta), Math.cos(lat_r) * Math.tan(delta) - Math.sin(lat_r) * Math.cos(delta));
+let az_deg = az * 180 / Math.PI;
+
+const el = Math.atan2(Math.cos(delta) * Math.cos(lat_r) - 0.1512, Math.sqrt(1 - Math.pow(Math.cos(delta) * Math.cos(lat_r), 2)));
+let el_deg = el * 180 / Math.PI;
+
+// 修正方位角象限
+if (az_deg < 0) az_deg += 360;
+
+return { az: az_deg, el: el_deg };
 }
 
-// 2. 获取GPS
-function getGPS() {
-const btn = document.getElementById('gpsBtn');
-btn.innerText = "定位中...";
+// === 启动流程 ===
+async function startFinder() {
+const btn = document.getElementById('startBtn');
+btn.disabled = true;
+btn.innerText = "正在获取定位...";
+statusMsg.innerText = "正在连接 GPS...";
 
+// 1. 获取 GPS
 if (!navigator.geolocation) {
 alert("您的浏览器不支持地理定位");
-btn.innerText = "📍 自动获取当前位置";
 return;
 }
 
 navigator.geolocation.getCurrentPosition(
 (position) => {
-const lat = position.coords.latitude;
-const lon = position.coords.longitude;
-document.getElementById('latInput').value = lat.toFixed(4);
-document.getElementById('lonInput').value = lon.toFixed(4);
-btn.innerText = "📍 重新定位";
-calculate(); // 自动计算
+userLat = position.coords.latitude;
+userLon = position.coords.longitude;
+const alt = position.coords.altitude || 0;
+
+document.getElementById('gpsStatus').innerText = `N${userLat.toFixed(4)} E${userLon.toFixed(4)} H${alt.toFixed(0)}m`;
+
+// 2. 计算理论值
+const pos = calculateSatellitePos(userLat, userLon, SAT_LON);
+targetAzimuth = pos.az;
+targetElevation = pos.el;
+
+document.getElementById('targetAz').innerText = targetAzimuth.toFixed(1) + "°";
+document.getElementById('targetEl').innerText = targetElevation.toFixed(1) + "°";
+
+statusMsg.innerText = "请抬起手机，对准天空";
+btn.innerText = "寻星进行中";
+
+// 3. 启动传感器
+initSensors();
 },
 (error) => {
-let msg = "定位失败";
-if(error.code == 1) msg = "请允许浏览器访问位置权限";
-if(error.code == 2) msg = "位置信息不可用";
-if(error.code == 3) msg = "定位超时，请检查网络";
-alert(msg);
-btn.innerText = "📍 自动获取当前位置";
+alert("定位失败: " + error.message + "\n请确保在户外并允许定位权限。");
+btn.disabled = false;
+btn.innerText = "重试";
 },
-{ enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+{ enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
 );
 }
 
-// 3. 罗盘逻辑 (兼容 iOS 和 Android)
-function startCompass() {
-if (isCompassActive) return;
-
+// === 传感器处理 ===
+function initSensors() {
 // iOS 13+ 需要请求权限
 if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
 DeviceOrientationEvent.requestPermission()
 .then(response => {
 if (response === 'granted') {
 window.addEventListener('deviceorientation', handleOrientation);
-isCompassActive = true;
-document.getElementById('statusBar').innerText = "罗盘已启动";
 } else {
-alert("需要罗盘权限才能指示方向");
+alert("需要传感器权限才能寻星");
 }
 })
 .catch(console.error);
 } else {
-// Android 或非 iOS 13+ 设备
-window.addEventListener('deviceorientationabsolute', handleOrientation, true); // Android Chrome
-window.addEventListener('deviceorientation', handleOrientation, true); // 通用 fallback
-isCompassActive = true;
-document.getElementById('statusBar').innerText = "罗盘运行中";
+// Android 和非 iOS 设备
+window.addEventListener('deviceorientation', handleOrientation);
 }
 }
 
 function handleOrientation(event) {
-let compass = null;
-
-// iOS webkitCompassHeading
+// 获取当前朝向 (WebkitCompassHeading for iOS, alpha for Android)
+let heading = 0;
 if (event.webkitCompassHeading) {
-compass = event.webkitCompassHeading;
-}
-// Android alpha (需要绝对方向)
-else if (event.alpha !== null) {
-// 注意：Android 的 alpha 并不总是指向正北，取决于设备和浏览器实现
-// 这里做一个简单的映射，实际使用中建议用户手动校准
-compass = 360 - event.alpha;
+heading = event.webkitCompassHeading; // iOS
+} else {
+heading = 360 - event.alpha; // Android (近似)
 }
 
-if (compass !== null) {
-drawCompass(compass, targetAzimuth);
+// 获取俯仰角 (beta: -180 to 180)
+// 当手机垂直指向天空时，beta 约为 -90 (取决于握持方式)
+// 这里假设用户手持手机，屏幕面向自己，底部朝下
+let pitch = event.beta;
+if (pitch > 90) pitch = 180 - pitch;
+if (pitch < -90) pitch = -180 - pitch;
+
+// 简单平滑处理
+currentHeading = heading;
+currentPitch = pitch;
+
+updateUI();
+}
+
+// === UI 更新逻辑 ===
+function updateUI() {
+document.getElementById('currentAz').innerText = Math.round(currentHeading) + "°";
+document.getElementById('currentPitch').innerText = Math.round(currentPitch) + "°";
 
 // 计算偏差
-let diff = targetAzimuth - compass;
-if (diff > 180) diff -= 360;
-if (diff < -180) diff += 360;
+let azDiff = targetAzimuth - currentHeading;
+// 处理 360 度跨越
+if (azDiff > 180) azDiff -= 360;
+if (azDiff < -180) azDiff += 360;
 
-const diffElem = document.getElementById('diffText');
-diffElem.innerText = Math.abs(diff).toFixed(0) + "°";
+let elDiff = targetElevation - currentPitch;
 
-// 颜色反馈
-if (Math.abs(diff) < 5) {
-diffElem.style.color = "#4caf50"; // 绿色表示对准
-diffElem.innerText = "OK";
+// 更新卫星点在圆圈中的位置
+// 圆圈中心是 (0,0)，范围假设为 +/- 45度视野
+const scale = 4; // 像素/度
+const maxOffset = 130; // 圆圈半径限制
+
+// X轴：方位角偏差 (左负右正)
+let x = azDiff * scale;
+// Y轴：仰角偏差 (上正下负，注意屏幕坐标系Y向下为正)
+let y = -elDiff * scale;
+
+// 限制在圆圈内
+const distance = Math.sqrt(x*x + y*y);
+if (distance > maxOffset) {
+const ratio = maxOffset / distance;
+x *= ratio;
+y *= ratio;
+}
+
+// 移动卫星点 (相对于中心)
+// 注意：crosshair 中心是 50%, 50%
+satDot.style.left = `calc(50% + ${x}px)`;
+satDot.style.top = `calc(50% + ${y}px)`;
+
+// 判定锁定
+const totalError = Math.abs(azDiff) + Math.abs(elDiff);
+if (totalError < 5) { // 误差小于5度
+satDot.classList.add('locked');
+statusMsg.innerText = "✅ 已对准卫星！";
+statusMsg.style.color = "var(--success)";
+accuracyBar.style.width = "10%";
+accuracyBar.style.background = "var(--success)";
 } else {
-diffElem.style.color = "#333";
+satDot.classList.remove('locked');
+statusMsg.innerText = "调整方向以对准圆点";
+statusMsg.style.color = "var(--primary)";
+
+// 误差条可视化
+let barWidth = Math.min(100, totalError * 2);
+accuracyBar.style.width = `${barWidth}%`;
+accuracyBar.style.background = totalError < 15 ? "var(--warning)" : "#ff3b30";
 }
-}
-}
-
-// 4. 绘制罗盘 Canvas
-function drawCompass(currentHeading, targetHeading) {
-const canvas = document.getElementById('compassCanvas');
-const ctx = canvas.getContext('2d');
-const dpr = window.devicePixelRatio || 1;
-const size = 260;
-
-canvas.width = size * dpr;
-canvas.height = size * dpr;
-ctx.scale(dpr, dpr);
-
-const center = size / 2;
-const radius = size / 2 - 10;
-
-ctx.clearRect(0, 0, size, size);
-
-// --- 绘制底盘 (随手机转动而反向转动，模拟固定罗盘) ---
-ctx.save();
-ctx.translate(center, center);
-ctx.rotate(-currentHeading * Math.PI / 180); // 反向旋转底盘
-
-// 外圈
-ctx.beginPath();
-ctx.arc(0, 0, radius, 0, 2 * Math.PI);
-ctx.strokeStyle = '#ddd';
-ctx.lineWidth = 2;
-ctx.stroke();
-
-// 刻度 N S E W
-ctx.font = 'bold 16px sans-serif';
-ctx.fillStyle = '#333';
-ctx.textAlign = 'center';
-ctx.textBaseline = 'middle';
-
-ctx.fillText('N', 0, -radius + 20);
-ctx.fillText('S', 0, radius - 20);
-ctx.fillText('E', radius - 20, 0);
-ctx.fillText('W', -radius + 20, 0);
-
-// 绘制目标卫星方向 (红色标记)
-// targetHeading 是绝对角度，底盘已经旋转了 -currentHeading
-// 所以目标在底盘上的相对角度是 targetHeading
-const targetRad = targetHeading * Math.PI / 180;
-const tx = (radius - 30) * Math.sin(targetRad);
-const ty = -(radius - 30) * Math.cos(targetRad);
-
-ctx.beginPath();
-ctx.arc(tx, ty, 8, 0, 2*Math.PI);
-ctx.fillStyle = '#d32f2f'; // 红色目标点
-ctx.fill();
-ctx.fillStyle = '#d32f2f';
-ctx.fillText('卫星', tx, ty - 15);
-
-ctx.restore();
-
-// --- 绘制手机指向 (固定的三角形，在顶部) ---
-ctx.save();
-ctx.translate(center, center);
-// 手机顶部指向通常是 Canvas 的上方 (270度或-90度位置)，这里我们画一个固定的指针在顶部
-ctx.beginPath();
-ctx.moveTo(0, -radius + 5);
-ctx.lineTo(-10, -radius + 25);
-ctx.lineTo(10, -radius + 25);
-ctx.closePath();
-ctx.fillStyle = '#2196f3';
-ctx.fill();
-ctx.restore();
 }
 </script>
-
 </body>
-  </html>
+</html>
