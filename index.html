@@ -1,472 +1,1059 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>中星9号真实寻星助手</title>
-<style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0a0e1a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>中星9C 卫星寻星器</title>
+    <style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap');
+ 
 :root {
---primary: #00f2ff;
---success: #00ff41;
---warning: #ffbd00;
---bg: #050505;
---panel-bg: rgba(20, 20, 20, 0.85);
+    --bg-primary: #0a0e1a;
+    --bg-secondary: #111827;
+    --bg-card: #1a2234;
+    --accent-green: #00ff88;
+    --accent-gold: #ffd700;
+    --accent-red: #ff4757;
+    --accent-blue: #00d4ff;
+    --text-primary: #ffffff;
+    --text-secondary: #a0a0a0;
+    --text-dim: #5a6a7a;
+    --border-color: #2a3a5a;
 }
-
-body {
-margin: 0;
-background-color: var(--bg);
-color: white;
-font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-overflow: hidden;
-height: 100vh;
-display: flex;
-flex-direction: column;
-align-items: center;
+ 
+* { margin: 0; padding: 0; box-sizing: border-box; }
+ 
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: 'Orbitron', sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    user-select: none;
+    -webkit-user-select: none;
 }
-
-/* 背景星空动画 */
-.stars {
-position: fixed;
-top: 0; left: 0; width: 100%; height: 100%;
-background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
-z-index: -1;
+ 
+.app-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
 }
-
-/* 顶部状态栏 */
+ 
+.app-container::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: 
+        radial-gradient(ellipse at 20% 20%, rgba(0, 255, 136, 0.05) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(0, 212, 255, 0.05) 0%, transparent 50%),
+        linear-gradient(180deg, rgba(10, 14, 26, 0) 0%, rgba(0, 0, 0, 0.5) 100%);
+    pointer-events: none;
+    z-index: 0;
+}
+ 
 .header {
-width: 100%;
-padding: 15px;
-text-align: center;
-background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
-z-index: 10;
+    padding: 16px 20px;
+    text-align: center;
+    background: linear-gradient(180deg, rgba(17, 24, 39, 0.95) 0%, rgba(17, 24, 39, 0) 100%);
+    position: relative;
+    z-index: 10;
 }
-.status-text {
-font-size: 1.2rem;
-font-weight: bold;
-color: var(--primary);
-text-shadow: 0 0 10px var(--primary);
+ 
+.satellite-name {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--accent-gold);
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+    margin-bottom: 4px;
 }
-.sub-status {
-font-size: 0.8rem;
-color: #aaa;
-margin-top: 5px;
+ 
+.satellite-position {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--text-secondary);
+    letter-spacing: 2px;
 }
-
-/* 核心寻星视野 */
-.finder-container {
-position: relative;
-width: 300px;
-height: 300px;
-margin: 20px auto;
-border: 2px solid rgba(255,255,255,0.1);
-border-radius: 50%;
-display: flex;
-justify-content: center;
-align-items: center;
+ 
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    position: relative;
+    z-index: 1;
 }
-
-/* 十字准星 */
-.crosshair {
-position: absolute;
-width: 100%;
-height: 100%;
-pointer-events: none;
+ 
+.compass-container {
+    position: relative;
+    width: min(85vw, 400px);
+    height: min(85vw, 400px);
 }
-.crosshair::before, .crosshair::after {
-content: '';
-position: absolute;
-background: rgba(255,255,255,0.3);
+ 
+#compassCanvas {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    box-shadow: 
+        0 0 60px rgba(0, 255, 136, 0.15),
+        0 0 120px rgba(0, 255, 136, 0.05),
+        inset 0 0 60px rgba(0, 0, 0, 0.5);
+    border: 3px solid var(--border-color);
 }
-.crosshair::before { top: 50%; left: 0; width: 100%; height: 1px; }
-.crosshair::after { left: 50%; top: 0; height: 100%; width: 1px; }
-
-/* 卫星目标点 (动态移动) */
-.sat-dot {
-position: absolute;
-width: 20px;
-height: 20px;
-background: var(--warning);
-border-radius: 50%;
-box-shadow: 0 0 15px var(--warning);
-transform: translate(-50%, -50%);
-transition: all 0.1s linear;
-z-index: 5;
+ 
+.level-container {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+    justify-content: center;
 }
-.sat-dot.locked {
-background: var(--success);
-box-shadow: 0 0 20px var(--success);
-width: 30px;
-height: 30px;
+ 
+.level-box {
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
-
-/* 水平仪气泡 */
-.level-bubble {
-position: absolute;
-width: 10px;
-height: 10px;
-background: rgba(255,255,255,0.5);
-border-radius: 50%;
-transform: translate(-50%, -50%);
-z-index: 4;
+ 
+.level-box h4 {
+    font-size: 10px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    text-align: center;
 }
-
-/* 数据面板 */
+ 
+.level-canvas {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 2px solid var(--border-color);
+}
+ 
 .data-panel {
-width: 90%;
-max-width: 400px;
-background: var(--panel-bg);
-border-radius: 15px;
-padding: 15px;
-margin-top: auto;
-margin-bottom: 20px;
-border: 1px solid rgba(255,255,255,0.1);
-backdrop-filter: blur(10px);
+    background: linear-gradient(180deg, rgba(17, 24, 39, 0) 0%, rgba(17, 24, 39, 0.95) 100%);
+    padding: 20px;
+    position: relative;
+    z-index: 10;
 }
-
-.data-row {
-display: flex;
-justify-content: space-between;
-margin-bottom: 8px;
-font-size: 0.9rem;
+ 
+.data-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    max-width: 500px;
+    margin: 0 auto;
 }
-.data-label { color: #888; }
-.data-val { font-family: monospace; font-weight: bold; color: var(--primary); }
-.data-val.highlight { color: var(--success); }
-
-.btn-start {
-background: var(--primary);
-color: #000;
-border: none;
-padding: 12px 30px;
-border-radius: 25px;
-font-weight: bold;
-font-size: 1rem;
-cursor: pointer;
-margin-top: 10px;
-width: 100%;
+ 
+.data-item {
+    background: var(--bg-card);
+    border-radius: 10px;
+    padding: 14px 16px;
+    border: 1px solid var(--border-color);
+    position: relative;
+    overflow: hidden;
 }
-.btn-start:disabled { background: #555; color: #888; }
-
-/* 误差指示条 */
-.error-bar-container {
-width: 100%;
-height: 6px;
-background: #333;
-border-radius: 3px;
-margin-top: 10px;
-overflow: hidden;
+ 
+.data-item::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px;
+    height: 100%;
+    background: var(--accent-green);
 }
-.error-bar {
-height: 100%;
-width: 50%;
-background: var(--warning);
-margin: 0 auto;
-transition: width 0.2s, background 0.2s;
+ 
+.data-item.gps::before { background: var(--accent-blue); }
+.data-item.azimuth::before { background: var(--accent-gold); }
+.data-item.elevation::before { background: var(--accent-green); }
+.data-item.polarization::before { background: var(--accent-red); }
+ 
+.data-label {
+    font-size: 10px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
-</style>
+ 
+.data-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+ 
+.data-value.highlight {
+    color: var(--accent-green);
+    text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+}
+ 
+.status-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: var(--bg-secondary);
+    border-radius: 20px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 16px;
+}
+ 
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent-red);
+    animation: pulse 1.5s infinite;
+}
+ 
+.status-dot.active { background: var(--accent-green); }
+ 
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+ 
+.permission-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(10, 14, 26, 0.98);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 40px;
+    text-align: center;
+}
+ 
+.permission-icon {
+    font-size: 64px;
+    margin-bottom: 24px;
+    animation: float 3s ease-in-out infinite;
+}
+ 
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+ 
+.permission-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--accent-gold);
+    margin-bottom: 16px;
+}
+ 
+.permission-text {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 32px;
+    max-width: 300px;
+}
+ 
+.permission-btn {
+    background: linear-gradient(135deg, var(--accent-green) 0%, #00cc6a 100%);
+    color: var(--bg-primary);
+    border: none;
+    padding: 14px 40px;
+    font-size: 14px;
+    font-weight: 700;
+    font-family: 'Orbitron', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(0, 255, 136, 0.3);
+    margin: 8px;
+}
+ 
+.permission-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 30px rgba(0, 255, 136, 0.5);
+}
+ 
+.permission-btn.secondary {
+    background: linear-gradient(135deg, var(--accent-blue) 0%, #0099cc 100%);
+    box-shadow: 0 4px 20px rgba(0, 212, 255, 0.3);
+}
+ 
+.permission-btn.secondary:hover {
+    box-shadow: 0 6px 30px rgba(0, 212, 255, 0.5);
+}
+ 
+.input-group {
+    margin: 20px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    max-width: 280px;
+}
+ 
+.input-row {
+    display: flex;
+    gap: 10px;
+}
+ 
+.input-field {
+    flex: 1;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 12px;
+    color: var(--text-primary);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+}
+ 
+.input-field::placeholder {
+    color: var(--text-dim);
+}
+ 
+.input-field:focus {
+    outline: none;
+    border-color: var(--accent-green);
+}
+ 
+.locked-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 255, 136, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    pointer-events: none;
+    animation: lockedPulse 1s ease-in-out infinite;
+}
+ 
+@keyframes lockedPulse {
+    0%, 100% { background: rgba(0, 255, 136, 0.1); }
+    50% { background: rgba(0, 255, 136, 0.2); }
+}
+ 
+.locked-text {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--accent-green);
+    text-transform: uppercase;
+    letter-spacing: 8px;
+    text-shadow: 0 0 30px rgba(0, 255, 136, 0.8);
+    animation: lockedText 0.5s ease-in-out infinite;
+}
+ 
+@keyframes lockedText {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+ 
+.simulated-controls {
+    position: absolute;
+    top: 70px;
+    right: 10px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 10px;
+    z-index: 50;
+}
+ 
+.sim-controls-title {
+    font-size: 10px;
+    color: var(--accent-blue);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    text-align: center;
+}
+ 
+.sim-slider {
+    width: 100px;
+    -webkit-appearance: none;
+    background: var(--bg-secondary);
+    border-radius: 5px;
+    height: 6px;
+    margin: 5px 0;
+}
+ 
+.sim-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    background: var(--accent-green);
+    border-radius: 50%;
+    cursor: pointer;
+}
+ 
+@media (orientation: landscape) and (max-height: 500px) {
+    .main-content { flex-direction: row; gap: 20px; }
+    .level-container { flex-direction: column; margin-top: 0; }
+    .data-grid { grid-template-columns: repeat(4, 1fr); }
+}
+ 
+@media (min-width: 768px) {
+    .compass-container { width: 450px; height: 450px; }
+    .level-canvas { width: 120px; height: 120px; }
+    .data-value { font-size: 22px; }
+}
+    </style>
 </head>
 <body>
-
-<div class="stars"></div>
-
-<div class="header">
-<div class="status-text" id="statusMsg">等待启动...</div>
-<div class="sub-status" id="gpsStatus">GPS未定位</div>
-</div>
-
-<div class="finder-container">
-<div class="crosshair"></div>
-<!-- 卫星目标点 -->
-<div class="sat-dot" id="satDot"></div>
-<!-- 水平仪中心点 -->
-<div class="level-bubble" id="levelBubble" style="left:50%; top:50%;"></div>
-</div>
-
-<div class="data-panel">
-<div class="data-row">
-<span class="data-label">目标方位角 (Az)</span>
-<span class="data-val" id="targetAz">--</span>
-</div>
-<div class="data-row">
-<span class="data-label">目标仰角 (El)</span>
-<span class="data-val" id="targetEl">--</span>
-</div>
-<div class="data-row">
-<span class="data-label">当前方位</span>
-<span class="data-val" id="currentAz">--</span>
-</div>
-<div class="data-row">
-<span class="data-label">当前俯仰</span>
-<span class="data-val" id="currentPitch">--</span>
-</div>
-
-<div class="error-bar-container">
-<div class="error-bar" id="accuracyBar"></div>
-</div>
-<div style="text-align:center; font-size:0.8rem; color:#666; margin-top:5px;">偏差指示 (越窄越准)</div>
-
-<button class="btn-start" id="startBtn" onclick="startFinder()">开始寻星定位</button>
-</div>
-
-<script>
-// === 配置参数 ===
-const SAT_LON = 92.2; // 中星9号轨道位置：东经92.2度
-
-// === 状态变量 ===
-let userLat = 0;
-let userLon = 0;
-let targetAzimuth = 0;
-let targetElevation = 0;
-let currentHeading = 0;
-let currentPitch = 0;
-let isRunning = false;
-
-// DOM 元素
-const satDot = document.getElementById('satDot');
-const levelBubble = document.getElementById('levelBubble');
-const statusMsg = document.getElementById('statusMsg');
-const accuracyBar = document.getElementById('accuracyBar');
-
-// === 核心算法：计算卫星方位角和仰角 ===
-function calculateSatellitePos(lat, lon, satLon) {
-const R = 6371; // 地球半径 km
-const h = 35786; // 同步轨道高度 km
-
-// 转换为弧度
-const latRad = lat * Math.PI / 180;
-const lonRad = lon * Math.PI / 180;
-const satLonRad = satLon * Math.PI / 180;
-
-const deltaLon = satLonRad - lonRad;
-
-// 计算中间变量
-const a = Math.cos(deltaLon) * Math.cos(latRad);
-const b = Math.sin(deltaLon) * Math.cos(latRad);
-const c = Math.sin(latRad);
-
-// 距离向量
-const r = Math.sqrt(1 + a*a + b*b + c*c - 2*a); // 简化模型
-
-// 方位角 (Azimuth)
-let az = Math.atan2(Math.sin(deltaLon), (Math.cos(latRad) * Math.tan(satLonRad - lonRad) - Math.sin(latRad) * Math.cos(deltaLon)));
-// 更稳健的方位角公式
-const y = Math.sin(deltaLon);
-const x = Math.cos(latRad) * Math.tan(satLonRad - lonRad) - Math.sin(latRad) * Math.cos(deltaLon);
-// 实际上常用公式：
-// Az = atan2( sin(dLon), cos(Lat)*tan(SatLon-Lon) - sin(Lat)*cos(dLon) )
-// 但为了简化，我们使用标准大地测量公式：
-
-const lambda = satLonRad - lonRad;
-const phi = latRad;
-
-const X = Math.cos(lambda) * Math.cos(phi);
-const Y = Math.sin(lambda) * Math.cos(phi);
-const Z = Math.sin(phi);
-
-// 地心坐标系到站心坐标系转换
-// 这里使用简化的近似公式，足以满足民用寻星精度
-const gamma = Math.atan2(Math.sin(lambda), (Math.cos(lambda) - (R/(R+h)) * Math.cos(phi)));
-
-// 方位角计算
-let azimuth = Math.atan2(Math.sin(lambda), (Math.cos(lambda) * Math.sin(phi) - (R/(R+h)) * Math.cos(phi))); // 修正后的公式
-
-// 使用更通用的在线计算器验证过的公式:
-const delta_lambda = satLonRad - lonRad;
-const numerator = Math.sin(delta_lambda);
-const denominator = Math.cos(latRad) * Math.tan(satLonRad - lonRad) - Math.sin(latRad) * Math.cos(delta_lambda);
-// 上面的分母公式可能有歧义，使用最稳妥的：
-
-const a_val = Math.sin(satLonRad - lonRad);
-const b_val = Math.cos(latRad) * Math.tan(satLonRad - lonRad) - Math.sin(latRad) * Math.cos(satLonRad - lonRad);
-// 这种三角函数推导容易出错，直接使用标准库逻辑：
-
-const E = Math.atan2(Math.sin(satLonRad - lonRad), Math.cos(latRad) * Math.tan(satLonRad - lonRad) - Math.sin(latRad) * Math.cos(satLonRad - lonRad));
-// 让我们用最简单的几何投影法：
-
-const ls = satLonRad;
-const lo = lonRad;
-const la = latRad;
-
-const a_geo = Math.cos(la) * Math.cos(lo - ls);
-const b_geo = Math.cos(la) * Math.sin(lo - ls);
-const c_geo = Math.sin(la);
-
-const r_geo = Math.sqrt(a_geo*a_geo + b_geo*b_geo + c_geo*c_geo);
-
-// 仰角 El
-const el_rad = Math.atan2(a_geo - (R/(R+h)), Math.sqrt(b_geo*b_geo + c_geo*c_geo));
-const el_deg = el_rad * 180 / Math.PI;
-
-// 方位角 Az (从正北顺时针)
-// Az = atan2( sin(ls-lo), cos(la)*tan(ls-lo) - sin(la)*cos(ls-lo) ) 是不对的
-// 正确公式：
-const az_rad = Math.atan2(Math.sin(ls - lo), Math.cos(la) * Math.tan(ls - lo) - Math.sin(la) * Math.cos(ls - lo)); // 依然复杂
-
-// 采用最可靠的 ITU 推荐公式简化版：
-const lambda_diff = ls - lo;
-const az_rad_final = Math.atan2(Math.sin(lambda_diff), Math.cos(la) * Math.tan(lambda_diff) - Math.sin(la) * Math.cos(lambda_diff)); // 这个公式在很多库里有问题
-
-// 最终决定使用这个经过验证的 JS 实现：
-const lat_r = lat * Math.PI / 180;
-const lon_r = lon * Math.PI / 180;
-const sat_r = satLon * Math.PI / 180;
-
-const delta = sat_r - lon_r;
-
-const az = Math.atan2(Math.sin(delta), Math.cos(lat_r) * Math.tan(delta) - Math.sin(lat_r) * Math.cos(delta));
-let az_deg = az * 180 / Math.PI;
-
-const el = Math.atan2(Math.cos(delta) * Math.cos(lat_r) - 0.1512, Math.sqrt(1 - Math.pow(Math.cos(delta) * Math.cos(lat_r), 2)));
-let el_deg = el * 180 / Math.PI;
-
-// 修正方位角象限
-if (az_deg < 0) az_deg += 360;
-
-return { az: az_deg, el: el_deg };
+    <div class="app-container">
+        <div class="header">
+            <h1 class="satellite-name">中星9C</h1>
+            <p class="satellite-position">92.2°E | 中国直播卫星</p>
+            <button id="downloadBtn" style="position: absolute; top: 10px; right: 10px; padding: 6px 12px; font-size: 10px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 4px; color: var(--text-secondary); cursor: pointer;">下载</button>
+        </div>
+ 
+        <div class="main-content">
+            <div class="compass-container">
+                <canvas id="compassCanvas"></canvas>
+            </div>
+ 
+            <div class="level-container">
+                <div class="level-box">
+                    <h4>俯仰</h4>
+                    <canvas id="levelPitch"></canvas>
+                </div>
+                <div class="level-box">
+                    <h4>横滚</h4>
+                    <canvas id="levelRoll"></canvas>
+                </div>
+            </div>
+ 
+            <div class="simulated-controls" id="simControls" style="display: none;">
+                <div class="sim-controls-title">模拟朝向</div>
+                <input type="range" class="sim-slider" id="simHeading" min="0" max="360" value="0">
+            </div>
+        </div>
+ 
+        <div class="data-panel">
+            <div class="data-grid">
+                <div class="data-item gps">
+                    <div class="data-label"><span>📍</span> GPS位置</div>
+                    <div class="data-value" id="gpsValue">等待定位...</div>
+                </div>
+                <div class="data-item azimuth">
+                    <div class="data-label"><span>🧭</span> 目标方位</div>
+                    <div class="data-value highlight" id="azimuthValue">--°</div>
+                </div>
+                <div class="data-item elevation">
+                    <div class="data-label"><span>📐</span> 仰角</div>
+                    <div class="data-value" id="elevationValue">--°</div>
+                </div>
+                <div class="data-item polarization">
+                    <div class="data-label"><span>📡</span> 极化角</div>
+                    <div class="data-value" id="polarizationValue">--°</div>
+                </div>
+            </div>
+            
+            <div class="status-bar">
+                <div class="status-dot" id="statusDot"></div>
+                <span id="statusText">正在初始化...</span>
+            </div>
+        </div>
+ 
+        <div class="permission-overlay" id="permissionOverlay">
+            <div class="permission-icon">📡</div>
+            <h2 class="permission-title">中星9C 寻星器</h2>
+            <p class="permission-text" id="permissionMessage">
+                此应用需要访问您的GPS和传感器来计算卫星方位。
+            </p>
+            
+            <div class="input-group" id="manualInput" style="display: none;">
+                <div class="input-row">
+                    <input type="text" class="input-field" id="inputLat" placeholder="纬度 如: 39.9042">
+                    <input type="text" class="input-field" id="inputLon" placeholder="经度 如: 116.4074">
+                </div>
+                <button class="permission-btn secondary" id="submitCoords" style="margin: 0;">确认坐标</button>
+            </div>
+            
+            <button class="permission-btn" id="permissionBtn">授予权限</button>
+            <button class="permission-btn secondary" id="manualBtn" style="display: none;">手动输入坐标</button>
+        </div>
+ 
+        <div class="locked-overlay" id="lockedOverlay" style="display: none;">
+            <div class="locked-text">对准成功!</div>
+        </div>
+    </div>
+ 
+    <script>
+const SensorManager = {
+    position: null,
+    orientation: null,
+    isSimulated: false,
+    listeners: { orientation: [], position: [] },
+    
+    async init() {
+        await this.requestPermissions();
+    },
+    
+    async requestPermissions() {
+        if (typeof DeviceOrientationEvent !== 'undefined' && 
+            typeof DeviceOrientationEvent.requestPermission === 'function') {
+            try {
+                const perm = await DeviceOrientationEvent.requestPermission();
+                if (perm === 'granted') {
+                    this.initDeviceOrientation();
+                    return true;
+                }
+            } catch (e) {}
+        }
+        
+        if ('DeviceOrientationEvent' in window) {
+            this.initDeviceOrientation();
+            return true;
+        }
+        
+        return false;
+    },
+    
+    initGeolocation() {
+        if ('geolocation' in navigator) {
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    this.position = {
+                        latitude: pos.coords.latitude,
+                        longitude: pos.coords.longitude
+                    };
+                    this.notifyListeners('position', this.position);
+                },
+                (err) => console.warn('GPS错误:', err.message),
+                { enableHighAccuracy: true, timeout: 10000 }
+            );
+            
+            navigator.geolocation.watchPosition(
+                (pos) => {
+                    this.position = {
+                        latitude: pos.coords.latitude,
+                        longitude: pos.coords.longitude
+                    };
+                    this.notifyListeners('position', this.position);
+                },
+                () => {},
+                { enableHighAccuracy: true }
+            );
+        }
+    },
+    
+    initDeviceOrientation() {
+        window.addEventListener('deviceorientation', (e) => {
+            if (e.alpha !== null) {
+                this.orientation = {
+                    alpha: e.alpha || 0,
+                    beta: e.beta || 0,
+                    gamma: e.gamma || 0,
+                    heading: ((360 - e.alpha) % 360)
+                };
+                this.notifyListeners('orientation', this.orientation);
+            }
+        }, true);
+    },
+    
+    setSimulatedPosition(lat, lon) {
+        this.position = { latitude: lat, longitude: lon };
+        this.notifyListeners('position', this.position);
+    },
+    
+    setSimulatedHeading(heading) {
+        this.orientation = { heading: heading, alpha: 360 - heading, beta: 0, gamma: 0 };
+        this.notifyListeners('orientation', this.orientation);
+    },
+    
+    enableSimulation() {
+        this.isSimulated = true;
+    },
+    
+    onOrientationChange(callback) {
+        if (typeof callback === 'function') this.listeners.orientation.push(callback);
+    },
+    
+    onPositionChange(callback) {
+        if (typeof callback === 'function') this.listeners.position.push(callback);
+    },
+    
+    notifyListeners(type, data) {
+        if (this.listeners[type]) {
+            this.listeners[type].forEach(cb => { try { cb(data); } catch (e) {} });
+        }
+    }
+};
+ 
+const SatelliteCalculator = {
+    satellite: { name: '中星9C', longitude: 92.2 },
+    declination: -7,
+    
+    calculateSimple(userLat, userLon) {
+        if (userLat === null || userLon === null) return null;
+        
+        const latRad = this.toRadians(userLat);
+        const deltaLon = this.satellite.longitude - userLon;
+        const deltaLonRad = this.toRadians(deltaLon);
+        
+        const cosLat = Math.cos(latRad);
+        const sinLat = Math.sin(latRad);
+        const cosDelta = Math.cos(deltaLonRad);
+        const sinDelta = Math.sin(deltaLonRad);
+        
+        const elevation = Math.atan2(
+            cosLat * cosDelta - 0.15126,
+            Math.sqrt(1 - cosLat * cosLat * sinDelta * sinDelta)
+        );
+        
+        const azimuth = Math.atan2(
+            sinDelta,
+            Math.tan(latRad) * cosDelta - sinLat * 0.9682
+        );
+        
+        const azimuthCompass = this.normalizeAngle(this.toDegrees(azimuth) - this.declination);
+        
+        return {
+            azimuthCompass: azimuthCompass,
+            elevation: this.toDegrees(elevation),
+            polarization: deltaLon * Math.cos(latRad) * 0.986,
+            targetAzimuth: azimuthCompass
+        };
+    },
+    
+    toRadians(deg) { return deg * Math.PI / 180; },
+    toDegrees(rad) { return rad * 180 / Math.PI; },
+    normalizeAngle(a) { return ((a % 360) + 360) % 360; }
+};
+ 
+class CompassRenderer {
+    constructor(canvas) {
+        this.canvas = canvas;
+        this.ctx = canvas.getContext('2d');
+        this.locked = false;
+        this.resize();
+        window.addEventListener('resize', () => this.resize());
+    }
+    
+    resize() {
+        const size = Math.min(this.canvas.parentElement.clientWidth, this.canvas.parentElement.clientHeight);
+        const dpr = window.devicePixelRatio || 1;
+        this.canvas.width = size * dpr;
+        this.canvas.height = size * dpr;
+        this.canvas.style.width = `${size}px`;
+        this.canvas.style.height = `${size}px`;
+        this.ctx.scale(dpr, dpr);
+        this.size = size;
+        this.center = size / 2;
+        this.radius = size / 2 - 10;
+    }
+    
+    render(heading, targetAzimuth, elevation) {
+        this.ctx.clearRect(0, 0, this.size, this.size);
+        
+        const grad = this.ctx.createRadialGradient(this.center, this.center, 0, this.center, this.center, this.radius);
+        grad.addColorStop(0, '#0f1520');
+        grad.addColorStop(1, '#050810');
+        this.ctx.beginPath();
+        this.ctx.arc(this.center, this.center, this.radius, 0, Math.PI * 2);
+        this.ctx.fillStyle = grad;
+        this.ctx.fill();
+        
+        for (let i = 0; i < 3; i++) {
+            this.ctx.beginPath();
+            this.ctx.arc(this.center, this.center, this.radius - i * (this.radius * 0.15), 0, Math.PI * 2);
+            this.ctx.strokeStyle = '#2a3a5a';
+            this.ctx.lineWidth = 2;
+            this.ctx.stroke();
+        }
+        
+        for (let i = 0; i < 360; i++) {
+            const angle = -Math.PI / 2 + (i - heading) * Math.PI / 180;
+            const isMajor = i % 30 === 0;
+            const isMedium = i % 10 === 0 && !isMajor;
+            const isMinor = i % 5 === 0 && !isMajor && !isMedium;
+            
+            let len = 0, lw = 1, col = '#5a6a7a';
+            if (isMajor) { len = this.radius * 0.12; lw = 3; col = '#fff'; }
+            else if (isMedium) { len = this.radius * 0.08; lw = 2; col = '#a0a0a0'; }
+            else if (isMinor) { len = this.radius * 0.04; }
+            
+            if (len > 0) {
+                this.ctx.beginPath();
+                this.ctx.moveTo(this.center + Math.cos(angle) * (this.radius - 5), this.center + Math.sin(angle) * (this.radius - 5));
+                this.ctx.lineTo(this.center + Math.cos(angle) * (this.radius - 5 - len), this.center + Math.sin(angle) * (this.radius - 5 - len));
+                this.ctx.strokeStyle = col;
+                this.ctx.lineWidth = lw;
+                this.ctx.stroke();
+            }
+        }
+        
+        const labels = [['N', 0], ['E', 90], ['S', 180], ['W', 270]];
+        this.ctx.font = `bold ${this.size * 0.05}px Orbitron`;
+        this.ctx.textAlign = 'center';
+        this.ctx.textBaseline = 'middle';
+        labels.forEach(([l, a], i) => {
+            const rad = -Math.PI / 2 + (a - heading) * Math.PI / 180;
+            this.ctx.fillStyle = i === 0 ? '#ff4757' : '#fff';
+            this.ctx.fillText(l, this.center + Math.cos(rad) * this.radius * 0.75, this.center + Math.sin(rad) * this.radius * 0.75);
+        });
+        
+        const targetRad = -Math.PI / 2 + (targetAzimuth - heading) * Math.PI / 180;
+        const mx = this.center + Math.cos(targetRad) * this.radius * 0.5;
+        const my = this.center + Math.sin(targetRad) * this.radius * 0.5;
+        
+        this.ctx.save();
+        this.ctx.translate(mx, my);
+        this.ctx.rotate(targetRad + Math.PI / 2);
+        this.ctx.beginPath();
+        this.ctx.moveTo(0, -this.size * 0.04);
+        this.ctx.lineTo(this.size * 0.025, this.size * 0.03);
+        this.ctx.lineTo(-this.size * 0.025, this.size * 0.03);
+        this.ctx.closePath();
+        this.ctx.fillStyle = this.locked ? '#00ff00' : '#00ff88';
+        this.ctx.shadowColor = '#00ff88';
+        this.ctx.shadowBlur = 15;
+        this.ctx.fill();
+        this.ctx.restore();
+        
+        this.ctx.font = `${this.size * 0.03}px Orbitron`;
+        this.ctx.fillStyle = '#00ff88';
+        this.ctx.textAlign = 'center';
+        this.ctx.fillText('SAT', mx, my + this.size * 0.08);
+        
+        let diff = targetAzimuth - heading;
+        while (diff > 180) diff -= 360;
+        while (diff < -180) diff += 360;
+        const deviation = Math.abs(diff);
+        
+        let centerColor = '#ff4757';
+        if (deviation < 3) { centerColor = '#00ff88'; this.locked = true; }
+        else if (deviation < 10) { centerColor = '#ffd700'; this.locked = false; }
+        else this.locked = false;
+        
+        this.ctx.beginPath();
+        this.ctx.arc(this.center, this.center, this.size * 0.08, 0, Math.PI * 2);
+        this.ctx.fillStyle = centerColor;
+        this.ctx.shadowColor = centerColor;
+        this.ctx.shadowBlur = 20;
+        this.ctx.fill();
+        this.ctx.shadowBlur = 0;
+        
+        if (elevation !== undefined) {
+            this.ctx.font = `${this.size * 0.035}px JetBrains Mono`;
+            this.ctx.fillStyle = '#fff';
+            this.ctx.fillText(`${elevation.toFixed(1)}°`, this.center, this.center);
+        }
+    }
 }
-
-// === 启动流程 ===
-async function startFinder() {
-const btn = document.getElementById('startBtn');
-btn.disabled = true;
-btn.innerText = "正在获取定位...";
-statusMsg.innerText = "正在连接 GPS...";
-
-// 1. 获取 GPS
-if (!navigator.geolocation) {
-alert("您的浏览器不支持地理定位");
-return;
+ 
+class LevelRenderer {
+    constructor(canvasX, canvasY) {
+        this.canvasX = canvasX;
+        this.canvasY = canvasY;
+        this.ctxX = canvasX.getContext('2d');
+        this.ctxY = canvasY.getContext('2d');
+        this.resize();
+    }
+    
+    resize() {
+        const size = 100;
+        const dpr = window.devicePixelRatio || 1;
+        [this.canvasX, this.canvasY].forEach(c => {
+            c.width = size * dpr;
+            c.height = size * dpr;
+            c.style.width = `${size}px`;
+            c.style.height = `${size}px`;
+        });
+        this.ctxX.scale(dpr, dpr);
+        this.ctxY.scale(dpr, dpr);
+        this.size = size;
+        this.center = size / 2;
+    }
+    
+    render(pitch, roll) {
+        this.drawLevel(this.ctxX, roll, '横滚');
+        this.drawLevel(this.ctxY, pitch, '俯仰');
+    }
+    
+    drawLevel(ctx, value, label) {
+        ctx.clearRect(0, 0, this.size, this.size);
+        const r = this.size / 2 - 5;
+        
+        const grad = ctx.createRadialGradient(this.center, this.center, 0, this.center, this.center, r);
+        grad.addColorStop(0, '#0f1520');
+        grad.addColorStop(1, '#0a0e1a');
+        ctx.beginPath();
+        ctx.arc(this.center, this.center, r, 0, Math.PI * 2);
+        ctx.fillStyle = grad;
+        ctx.fill();
+        ctx.strokeStyle = '#2a3a5a';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        
+        const maxOffset = r * 0.8;
+        const offset = Math.max(-45, Math.min(45, value)) / 45 * maxOffset;
+        const dist = Math.abs(offset);
+        
+        let col = '#ff4757';
+        if (dist < maxOffset * 0.15) col = '#00ff88';
+        else if (dist < maxOffset * 0.4) col = '#ffd700';
+        
+        ctx.beginPath();
+        ctx.arc(this.center + offset, this.center, r * 0.2, 0, Math.PI * 2);
+        ctx.fillStyle = col;
+        ctx.shadowColor = col;
+        ctx.shadowBlur = 10;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        
+        ctx.font = `bold ${this.size * 0.12}px JetBrains Mono`;
+        ctx.fillStyle = '#a0a0a0';
+        ctx.textAlign = 'center';
+        ctx.fillText(`${value.toFixed(1)}°`, this.center, this.center - r * 0.6);
+    }
 }
-
-navigator.geolocation.getCurrentPosition(
-(position) => {
-userLat = position.coords.latitude;
-userLon = position.coords.longitude;
-const alt = position.coords.altitude || 0;
-
-document.getElementById('gpsStatus').innerText = `N${userLat.toFixed(4)} E${userLon.toFixed(4)} H${alt.toFixed(0)}m`;
-
-// 2. 计算理论值
-const pos = calculateSatellitePos(userLat, userLon, SAT_LON);
-targetAzimuth = pos.az;
-targetElevation = pos.el;
-
-document.getElementById('targetAz').innerText = targetAzimuth.toFixed(1) + "°";
-document.getElementById('targetEl').innerText = targetElevation.toFixed(1) + "°";
-
-statusMsg.innerText = "请抬起手机，对准天空";
-btn.innerText = "寻星进行中";
-
-// 3. 启动传感器
-initSensors();
-},
-(error) => {
-alert("定位失败: " + error.message + "\n请确保在户外并允许定位权限。");
-btn.disabled = false;
-btn.innerText = "重试";
-},
-{ enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-);
+ 
+class SatelliteTracker {
+    constructor() {
+        this.compass = null;
+        this.level = null;
+        this.satelliteData = null;
+        this.currentPosition = null;
+        this.currentHeading = 0;
+        this.isLocked = false;
+        this.isSimulated = false;
+        
+        this.init();
+    }
+    
+    init() {
+        this.setupUI();
+        this.compass = new CompassRenderer(document.getElementById('compassCanvas'));
+        this.level = new LevelRenderer(document.getElementById('levelPitch'), document.getElementById('levelRoll'));
+        this.setupEventListeners();
+        this.autoSetup();
+    }
+    
+    setupUI() {
+        this.el = {
+            permissionOverlay: document.getElementById('permissionOverlay'),
+            permissionBtn: document.getElementById('permissionBtn'),
+            manualBtn: document.getElementById('manualBtn'),
+            manualInput: document.getElementById('manualInput'),
+            inputLat: document.getElementById('inputLat'),
+            inputLon: document.getElementById('inputLon'),
+            permissionMessage: document.getElementById('permissionMessage'),
+            gpsValue: document.getElementById('gpsValue'),
+            azimuthValue: document.getElementById('azimuthValue'),
+            elevationValue: document.getElementById('elevationValue'),
+            polarizationValue: document.getElementById('polarizationValue'),
+            statusDot: document.getElementById('statusDot'),
+            statusText: document.getElementById('statusText'),
+            lockedOverlay: document.getElementById('lockedOverlay'),
+            simControls: document.getElementById('simControls'),
+            simHeading: document.getElementById('simHeading')
+        };
+    }
+    
+    setupEventListeners() {
+        this.el.permissionBtn.addEventListener('click', () => this.requestSensorPermission());
+        this.el.manualBtn.addEventListener('click', () => this.toggleManualInput());
+        document.getElementById('submitCoords').addEventListener('click', () => this.submitManualCoords());
+        this.el.simHeading.addEventListener('input', (e) => {
+            if (this.isSimulated) {
+                SensorManager.setSimulatedHeading(parseFloat(e.target.value));
+            }
+        });
+        
+        // 下载按钮功能
+        document.getElementById('downloadBtn').addEventListener('click', () => {
+            this.downloadFile();
+        });
+    }
+    
+    downloadFile() {
+        const htmlContent = document.documentElement.outerHTML;
+        const blob = new Blob([htmlContent], { type: 'text/html' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'satellite-tracker.html';
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+    
+    async autoSetup() {
+        this.el.permissionMessage.textContent = '正在检测设备传感器...';
+        
+        await new Promise(r => setTimeout(r, 500));
+        
+        const hasOrientation = 'DeviceOrientationEvent' in window;
+        const hasGeolocation = 'geolocation' in navigator;
+        
+        if (hasOrientation) {
+            this.el.permissionMessage.textContent = '检测到方向传感器可用。点击"授予权限"继续。';
+            this.el.manualBtn.style.display = 'none';
+        } else {
+            this.el.permissionMessage.textContent = '此设备不支持方向传感器。\n可使用手动输入坐标+滑块模拟。';
+            this.el.permissionBtn.style.display = 'none';
+            this.el.manualBtn.style.display = 'inline-block';
+            this.el.manualInput.style.display = 'flex';
+            SensorManager.enableSimulation();
+            this.isSimulated = true;
+        }
+    }
+    
+    async requestSensorPermission() {
+        SensorManager.enableSimulation();
+        this.isSimulated = true;
+        
+        try {
+            await SensorManager.init();
+            SensorManager.initGeolocation();
+        } catch (e) {
+            console.warn('传感器初始化失败，使用模拟模式');
+        }
+        
+        if (SensorManager.position) {
+            this.currentPosition = SensorManager.position;
+            this.updateGPSDisplay();
+        } else {
+            const defaultLat = 39.9042;
+            const defaultLon = 116.4074;
+            SensorManager.setSimulatedPosition(defaultLat, defaultLon);
+            this.currentPosition = { latitude: defaultLat, longitude: defaultLon };
+            this.updateGPSDisplay();
+        }
+        
+        SensorManager.onOrientationChange((data) => {
+            if (this.isSimulated) {
+                this.currentHeading = data.heading;
+            }
+        });
+        
+        SensorManager.onPositionChange((data) => {
+            this.currentPosition = data;
+            this.updateGPSDisplay();
+        });
+        
+        this.el.simControls.style.display = 'block';
+        this.el.permissionOverlay.style.display = 'none';
+        this.updateStatus('模拟模式运行中', true);
+        this.startTracking();
+    }
+    
+    toggleManualInput() {
+        const isVisible = this.el.manualInput.style.display !== 'none';
+        this.el.manualInput.style.display = isVisible ? 'none' : 'flex';
+        this.el.manualBtn.textContent = isVisible ? '手动输入坐标' : '收起输入';
+    }
+    
+    submitManualCoords() {
+        const lat = parseFloat(this.el.inputLat.value);
+        const lon = parseFloat(this.el.inputLon.value);
+        
+        if (isNaN(lat) || isNaN(lon) || lat < -90 || lat > 90 || lon < -180 || lon > 180) {
+            alert('请输入有效的经纬度坐标！\n纬度: -90 到 90\n经度: -180 到 180');
+            return;
+        }
+        
+        SensorManager.enableSimulation();
+        this.isSimulated = true;
+        SensorManager.setSimulatedPosition(lat, lon);
+        this.currentPosition = { latitude: lat, longitude: lon };
+        this.updateGPSDisplay();
+        
+        SensorManager.onOrientationChange((data) => {
+            this.currentHeading = data.heading;
+        });
+        
+        this.el.simControls.style.display = 'block';
+        this.el.permissionOverlay.style.display = 'none';
+        this.updateStatus('手动模式已激活', true);
+        this.startTracking();
+    }
+    
+    startTracking() {
+        this.update();
+    }
+    
+    update() {
+        if (this.currentPosition) {
+            this.satelliteData = SatelliteCalculator.calculateSimple(
+                this.currentPosition.latitude,
+                this.currentPosition.longitude
+            );
+            
+            if (this.satelliteData) {
+                this.compass.render(
+                    this.currentHeading,
+                    this.satelliteData.targetAzimuth,
+                    this.satelliteData.elevation
+                );
+                this.updateDataDisplay();
+                this.checkLock();
+            }
+            
+            this.level.render(0, 0);
+        }
+        
+        requestAnimationFrame(() => this.update());
+    }
+    
+    updateGPSDisplay() {
+        if (this.currentPosition) {
+            this.el.gpsValue.textContent = 
+                `${this.currentPosition.latitude.toFixed(4)}°, ${this.currentPosition.longitude.toFixed(4)}°`;
+        }
+    }
+    
+    updateDataDisplay() {
+        if (!this.satelliteData) return;
+        this.el.azimuthValue.textContent = `${this.satelliteData.azimuthCompass.toFixed(1)}°`;
+        this.el.elevationValue.textContent = `${this.satelliteData.elevation.toFixed(1)}°`;
+        this.el.polarizationValue.textContent = `${this.satelliteData.polarization.toFixed(1)}°`;
+    }
+    
+    checkLock() {
+        if (!this.satelliteData) return;
+        let diff = this.satelliteData.targetAzimuth - this.currentHeading;
+        while (diff > 180) diff -= 360;
+        while (diff < -180) diff += 360;
+        
+        const isAligned = Math.abs(diff) < 5;
+        
+        if (isAligned && !this.isLocked) {
+            this.isLocked = true;
+            this.el.lockedOverlay.style.display = 'flex';
+            if (navigator.vibrate) navigator.vibrate(200);
+        } else if (!isAligned && this.isLocked) {
+            this.isLocked = false;
+            this.el.lockedOverlay.style.display = 'none';
+        }
+    }
+    
+    updateStatus(msg, active) {
+        this.el.statusText.textContent = msg;
+        this.el.statusDot.classList.toggle('active', active);
+    }
 }
-
-// === 传感器处理 ===
-function initSensors() {
-// iOS 13+ 需要请求权限
-if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
-DeviceOrientationEvent.requestPermission()
-.then(response => {
-if (response === 'granted') {
-window.addEventListener('deviceorientation', handleOrientation);
-} else {
-alert("需要传感器权限才能寻星");
-}
-})
-.catch(console.error);
-} else {
-// Android 和非 iOS 设备
-window.addEventListener('deviceorientation', handleOrientation);
-}
-}
-
-function handleOrientation(event) {
-// 获取当前朝向 (WebkitCompassHeading for iOS, alpha for Android)
-let heading = 0;
-if (event.webkitCompassHeading) {
-heading = event.webkitCompassHeading; // iOS
-} else {
-heading = 360 - event.alpha; // Android (近似)
-}
-
-// 获取俯仰角 (beta: -180 to 180)
-// 当手机垂直指向天空时，beta 约为 -90 (取决于握持方式)
-// 这里假设用户手持手机，屏幕面向自己，底部朝下
-let pitch = event.beta;
-if (pitch > 90) pitch = 180 - pitch;
-if (pitch < -90) pitch = -180 - pitch;
-
-// 简单平滑处理
-currentHeading = heading;
-currentPitch = pitch;
-
-updateUI();
-}
-
-// === UI 更新逻辑 ===
-function updateUI() {
-document.getElementById('currentAz').innerText = Math.round(currentHeading) + "°";
-document.getElementById('currentPitch').innerText = Math.round(currentPitch) + "°";
-
-// 计算偏差
-let azDiff = targetAzimuth - currentHeading;
-// 处理 360 度跨越
-if (azDiff > 180) azDiff -= 360;
-if (azDiff < -180) azDiff += 360;
-
-let elDiff = targetElevation - currentPitch;
-
-// 更新卫星点在圆圈中的位置
-// 圆圈中心是 (0,0)，范围假设为 +/- 45度视野
-const scale = 4; // 像素/度
-const maxOffset = 130; // 圆圈半径限制
-
-// X轴：方位角偏差 (左负右正)
-let x = azDiff * scale;
-// Y轴：仰角偏差 (上正下负，注意屏幕坐标系Y向下为正)
-let y = -elDiff * scale;
-
-// 限制在圆圈内
-const distance = Math.sqrt(x*x + y*y);
-if (distance > maxOffset) {
-const ratio = maxOffset / distance;
-x *= ratio;
-y *= ratio;
-}
-
-// 移动卫星点 (相对于中心)
-// 注意：crosshair 中心是 50%, 50%
-satDot.style.left = `calc(50% + ${x}px)`;
-satDot.style.top = `calc(50% + ${y}px)`;
-
-// 判定锁定
-const totalError = Math.abs(azDiff) + Math.abs(elDiff);
-if (totalError < 5) { // 误差小于5度
-satDot.classList.add('locked');
-statusMsg.innerText = "✅ 已对准卫星！";
-statusMsg.style.color = "var(--success)";
-accuracyBar.style.width = "10%";
-accuracyBar.style.background = "var(--success)";
-} else {
-satDot.classList.remove('locked');
-statusMsg.innerText = "调整方向以对准圆点";
-statusMsg.style.color = "var(--primary)";
-
-// 误差条可视化
-let barWidth = Math.min(100, totalError * 2);
-accuracyBar.style.width = `${barWidth}%`;
-accuracyBar.style.background = totalError < 15 ? "var(--warning)" : "#ff3b30";
-}
-}
-</script>
+ 
+const app = new SatelliteTracker();
+    <\/script>
 </body>
 </html>
