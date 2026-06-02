@@ -633,13 +633,17 @@
  
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"><\/script>
     <script>
+        const SUPABASE_URL = 'YOUR_SUPABASE_URL';
+        const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
         const SUPABASE_URL = 'https://fedlhohopipeyrmdctfr.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZlZGxob2hvcGlwZXlybWRjdGZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyNTMxMTgsImV4cCI6MjA5NTgyOTExOH0.aQ5h9c11gObhvvCJpehPwRk7tn_7vfjtPMuJz7oXMDI';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFub24iLCJpYXQiOjE3ODAyNTMxMTgsImV4cCI6MjA5NTgyOTExOH0.aQ5h9c11gObhvvCJpehPwRk7tn_7vfjtPMuJz7oXMDI';
+ 
         let supabaseClient;
         let currentRoom = null;
         let currentNickname = null;
         let channel = null;
         let messageSubscription = null;
+        let isConfigured = false;
  
         const loginPage = document.getElementById('loginPage');
         const chatPage = document.getElementById('chatPage');
@@ -659,7 +663,20 @@
         const displayRoomCode = document.getElementById('displayRoomCode');
  
         function initSupabase() {
-            supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            if (SUPABASE_URL === 'YOUR_SUPABASE_URL' || SUPABASE_ANON_KEY === 'YOUR_SUPABASE_ANON_KEY') {
+                console.warn('Supabase 未配置，请先更新 SPEC.md 中的配置信息');
+                isConfigured = false;
+                return;
+            }
+            
+            try {
+                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                isConfigured = true;
+                console.log('Supabase 初始化成功');
+            } catch (error) {
+                console.error('Supabase 初始化失败:', error);
+                isConfigured = false;
+            }
         }
  
         function generateRoomCode() {
@@ -888,6 +905,12 @@
         }
  
         async function joinRoom(roomCode, nickname) {
+            if (!isConfigured) {
+                showToast('请先配置 Supabase！');
+                console.error('Supabase 未配置，请更新 SUPABASE_URL 和 SUPABASE_ANON_KEY');
+                return false;
+            }
+ 
             showConnectionStatus('connecting', '正在连接...');
  
             try {
@@ -1078,7 +1101,30 @@
             messageInput.style.height = Math.min(messageInput.scrollHeight, 120) + 'px';
         });
  
+        async function testDatabaseConnection() {
+            if (!isConfigured || !supabaseClient) return;
+            
+            try {
+                const { data, error } = await supabaseClient
+                    .from('rooms')
+                    .select('room_id')
+                    .limit(1);
+                
+                if (!error) {
+                    console.log('数据库连接测试成功');
+                    showToast('数据库连接成功');
+                } else {
+                    console.error('数据库连接测试失败:', error);
+                    showToast('数据库连接失败，请检查配置');
+                }
+            } catch (error) {
+                console.error('数据库连接异常:', error);
+                showToast('数据库连接异常');
+            }
+        }
+ 
         initSupabase();
+        setTimeout(testDatabaseConnection, 1000);
     <\/script>
 </body>
 </html>
