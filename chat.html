@@ -25,8 +25,10 @@
             box-sizing: border-box;
         }
  
+        
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
@@ -35,12 +37,15 @@
             padding: 20px;
         }
  
+        
         .container {
             width: 100%;
             max-width: 640px;
             background: var(--white);
+            background: white;
             border-radius: 16px;
             box-shadow: var(--shadow-lg);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             overflow: hidden;
             animation: slideUp 0.5s ease-out;
         }
@@ -56,13 +61,17 @@
             }
         }
  
+        
         .header {
             background: var(--primary);
             color: var(--white);
+            background: #667eea;
+            color: white;
             padding: 24px;
             text-align: center;
         }
  
+        
         .header h1 {
             font-size: 28px;
             font-weight: 700;
@@ -78,19 +87,23 @@
             opacity: 0.9;
         }
  
+        
         .content {
             padding: 32px 24px;
         }
  
+        
         .form-group {
             margin-bottom: 20px;
         }
  
+        
         .form-group label {
             display: block;
             font-size: 14px;
             font-weight: 600;
             color: var(--text);
+            color: #1E293B;
             margin-bottom: 8px;
         }
  
@@ -99,11 +112,14 @@
         }
  
         .input-wrapper input {
+        
+        input {
             width: 100%;
             padding: 14px 16px;
             padding-left: 44px;
             font-size: 16px;
             border: 2px solid var(--border);
+            border: 2px solid #E2E8F0;
             border-radius: 12px;
             transition: all 0.3s ease;
             outline: none;
@@ -112,6 +128,9 @@
         .input-wrapper input:focus {
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        
+        input:focus {
+            border-color: #667eea;
         }
  
         .input-wrapper .icon {
@@ -129,6 +148,7 @@
             margin-top: 6px;
         }
  
+        
         .btn {
             width: 100%;
             padding: 16px;
@@ -136,6 +156,8 @@
             font-weight: 600;
             color: var(--white);
             background: var(--primary);
+            color: white;
+            background: #667eea;
             border: none;
             border-radius: 12px;
             cursor: pointer;
@@ -144,12 +166,16 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
+            cursor: pointer;
+            margin-top: 12px;
         }
  
+        
         .btn:hover {
             background: var(--primary-hover);
             transform: translateY(-2px);
             box-shadow: var(--shadow);
+            background: #5a67d8;
         }
  
         .btn:active {
@@ -162,14 +188,19 @@
             transform: none;
         }
  
+        
         .btn-secondary {
             background: var(--secondary);
             color: var(--text);
             margin-top: 12px;
+            background: #f0f0f0;
+            color: #1E293B;
         }
  
+        
         .btn-secondary:hover {
             background: var(--border);
+            background: #e0e0e0;
         }
  
         .divider {
@@ -192,27 +223,33 @@
             padding: 0 16px;
         }
  
+        
         .tips {
             background: var(--secondary);
+            background: #f8fafc;
             border-radius: 12px;
             padding: 16px;
             margin-top: 24px;
         }
  
+        
         .tips h3 {
             font-size: 14px;
             font-weight: 600;
             color: var(--text);
+            color: #1E293B;
             margin-bottom: 12px;
             display: flex;
             align-items: center;
             gap: 8px;
         }
  
+        
         .tips ul {
             list-style: none;
             font-size: 13px;
             color: var(--text-light);
+            color: #64748B;
         }
  
         .tips li {
@@ -231,14 +268,19 @@
  
         /* Chat Page Styles */
         .chat-container {
+        
+        .chatPage {
             display: none;
             flex-direction: column;
             height: 600px;
         }
  
+        
         .chat-header {
             background: var(--primary);
             color: var(--white);
+            background: #667eea;
+            color: white;
             padding: 16px 20px;
             display: flex;
             align-items: center;
@@ -306,21 +348,25 @@
             background: rgba(255, 255, 255, 0.3);
         }
  
+        
         .messages {
             flex: 1;
             overflow-y: auto;
             padding: 20px;
             background: var(--bg);
+            background: #f8fafc;
             display: flex;
             flex-direction: column;
             gap: 16px;
         }
  
+        
         .message {
             max-width: 75%;
             padding: 12px 16px;
             border-radius: 16px;
             animation: fadeIn 0.3s ease;
+            max-width: 75%;
         }
  
         @keyframes fadeIn {
@@ -334,17 +380,23 @@
             }
         }
  
+        
         .message.own {
             align-self: flex-end;
             background: var(--primary);
             color: var(--white);
+            background: #667eea;
+            color: white;
             border-bottom-right-radius: 4px;
         }
  
+        
         .message.other {
             align-self: flex-start;
             background: var(--white);
             color: var(--text);
+            background: white;
+            color: #1E293B;
             border-bottom-left-radius: 4px;
             box-shadow: var(--shadow);
         }
@@ -377,14 +429,18 @@
             opacity: 0.8;
         }
  
+        
         .chat-input {
             padding: 16px 20px;
             background: var(--white);
             border-top: 1px solid var(--border);
+            padding: 16px;
+            border-top: 1px solid #e0e0e0;
             display: flex;
             gap: 12px;
         }
  
+        
         .chat-input input {
             flex: 1;
             padding: 14px 18px;
@@ -399,18 +455,22 @@
             border-color: var(--primary);
         }
  
+        
         .send-btn {
             width: 52px;
             height: 52px;
             border-radius: 50%;
             background: var(--primary);
             color: var(--white);
+            background: #667eea;
+            color: white;
             border: none;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all 0.3s;
+            font-size: 24px;
         }
  
         .send-btn:hover {
@@ -509,17 +569,29 @@
             background: var(--text);
             color: var(--white);
             padding: 12px 24px;
+        
+        .debug {
+            margin-top: 20px;
+            padding: 16px;
+            background: #fff3cd;
+            border: 1px solid #ffc107;
             border-radius: 8px;
             font-size: 14px;
             opacity: 0;
             transition: opacity 0.3s;
             z-index: 100;
+            font-family: monospace;
+            font-size: 13px;
         }
  
         .toast.show {
             opacity: 1;
+        
+        .debug div {
+            margin-bottom: 8px 0;
         }
  
+        
         @media (max-width: 640px) {
             body {
                 padding: 0;
@@ -532,6 +604,7 @@
             }
  
             .chat-container {
+            .chatPage {
                 height: 100vh;
                 height: 100dvh;
             }
@@ -548,6 +621,7 @@
  
     <div class="container">
         <div id="loginPage" class="login-page">
+        <div id="loginPage">
             <div class="header">
                 <h1>💬 双人聊</h1>
                 <p>简洁私密的双人在线聊天</p>
@@ -560,6 +634,8 @@
                         <input type="text" id="nickname" placeholder="输入你的昵称" maxlength="20" autocomplete="off">
                     </div>
                     <div class="input-hint">用于消息显示，不会泄露个人信息</div>
+                    <label>你的昵称</label>
+                    <input type="text" id="nickname" placeholder="输入你的昵称">
                 </div>
  
                 <div class="divider"><span>选择操作</span></div>
@@ -571,6 +647,8 @@
                         <input type="text" id="roomCode" placeholder="输入6位房间号" maxlength="6" inputmode="numeric" autocomplete="off">
                     </div>
                     <div class="input-hint">向对方索取房间号，或创建新房间</div>
+                    <label>房间号（可选）</label>
+                    <input type="text" id="roomCode" placeholder="输入6位房间号">
                 </div>
  
                 <button class="btn" id="joinBtn">
@@ -583,19 +661,39 @@
                     <span>创建新房间</span>
                 </button>
  
+                <button class="btn btn-secondary" id="testBtn" style="margin-top: 12px;">
+                    <span>🔍</span>
+                    <span>测试连接</span>
+                </button>
+ 
+                <div id="debugInfo" style="margin-top: 16px; padding: 12px; background: #f0f0f0; border-radius: 8px; font-family: monospace; font-size: 12px; display: none;"></div>
+ 
+                <button class="btn" id="joinBtn">🚀 加入房间</button>
+                <button class="btn btn-secondary" id="createRoomBtn">✨ 创建新房间</button>
+                <button class="btn btn-secondary" id="testBtn">🔍 测试连接</button>
+                
+                <div id="debugInfo" class="debug" style="display: none;"></div>
+                
                 <div class="tips">
                     <h3>💡 使用提示</h3>
+                    <h3>使用提示</h3>
                     <ul>
                         <li>创建房间后，你会获得一个6位数的房间号</li>
                         <li>将房间号分享给聊天对象，对方输入即可加入</li>
                         <li>无需注册账号，保护你的隐私</li>
                         <li>消息实时推送，无需刷新页面</li>
+                        <li>创建房间后，会获得6位房间号</li>
+                        <li>分享给朋友，输入房间号即可聊天</li>
+                        <li>无需注册账号，保护隐私</li>
+                        <li>实时消息，无需刷新</li>
                     </ul>
                 </div>
             </div>
         </div>
  
         <div id="chatPage" class="chat-container">
+        
+        <div id="chatPage" class="chatPage">
             <div class="chat-header">
                 <div class="room-info">
                     <div class="room-code" id="displayRoomCode" title="点击复制房间号">
@@ -610,6 +708,8 @@
                 <button class="leave-btn" id="leaveBtn">
                     🚪 离开
                 </button>
+                <div>房间：<span id="roomCodeDisplay">123456</span></div>
+                <button id="leaveBtn" style="background: rgba(255,255,255,0.2); border: none; padding: 8px 16px; border-radius: 8px; color: white; cursor: pointer;">离开</button>
             </div>
  
             <div class="messages" id="messagesContainer">
@@ -617,6 +717,7 @@
                     <div class="icon">💬</div>
                     <p>开始发送消息吧！<br>对方加入后即可实时收到消息。</p>
                 </div>
+                <div style="text-align: center; color: #64748B; padding: 20px;">开始发送消息吧！</div>
             </div>
  
             <div class="chat-input">
@@ -627,18 +728,20 @@
                         <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
                     </svg>
                 </button>
+                <input type="text" id="messageInput" placeholder="输入消息...">
+                <button class="send-btn" id="sendBtn">→</button>
             </div>
         </div>
     </div>
  
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"><\/script>
     <script>
-        const SUPABASE_URL = 'YOUR_SUPABASE_URL';
-        const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
         const SUPABASE_URL = 'https://fedlhohopipeyrmdctfr.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFub24iLCJpYXQiOjE3ODAyNTMxMTgsImV4cCI6MjA5NTgyOTExOH0.aQ5h9c11gObhvvCJpehPwRk7tn_7vfjtPMuJz7oXMDI';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZlZGxob2hvcGlwZXlybWRjdGZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyNTMxMTgsImV4cCI6MjA5NTgyOTExOH0.aQ5h9c11gObhvvCJpehPwRk7tn_7vfjtPMuJz7oXMDI';
  
         let supabaseClient;
+        let supabaseClient = null;
         let currentRoom = null;
         let currentNickname = null;
         let channel = null;
@@ -653,14 +756,20 @@
         const nicknameInput = document.getElementById('nickname');
         const roomCodeInput = document.getElementById('roomCode');
         const joinBtn = document.getElementById('joinBtn');
-        const createRoomBtn = document.getElementById('createRoomBtn');
-        const messagesContainer = document.getElementById('messagesContainer');
+4 lines hidden
         const messageInput = document.getElementById('messageInput');
         const sendBtn = document.getElementById('sendBtn');
         const leaveBtn = document.getElementById('leaveBtn');
         const roomCodeText = document.getElementById('roomCodeText');
         const onlineCount = document.getElementById('onlineCount');
         const displayRoomCode = document.getElementById('displayRoomCode');
+        const roomCodeDisplay = document.getElementById('roomCodeDisplay');
+ 
+        function showDebug(msg) {
+            debugInfo.style.display = 'block';
+            debugInfo.innerHTML += '<div>' + msg + '</div>';
+            console.log(msg);
+        }
  
         function initSupabase() {
             if (SUPABASE_URL === 'YOUR_SUPABASE_URL' || SUPABASE_ANON_KEY === 'YOUR_SUPABASE_ANON_KEY') {
@@ -670,12 +779,17 @@
             }
             
             try {
+                showDebug('初始化 Supabase...');
                 supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
                 isConfigured = true;
                 console.log('Supabase 初始化成功');
+                showDebug('✓ Supabase 初始化成功');
+                return true;
             } catch (error) {
                 console.error('Supabase 初始化失败:', error);
                 isConfigured = false;
+                showDebug('✗ Supabase 初始化失败: ' + error.message);
+                return false;
             }
         }
  
@@ -694,6 +808,9 @@
         function showConnectionStatus(status, message) {
             connectionStatus.style.display = 'flex';
             connectionStatus.className = 'connection-status ' + status;
+        async function testConnection() {
+            debugInfo.innerHTML = '';
+            showDebug('开始测试...');
             
             if (status === 'connecting') {
                 connectionStatus.innerHTML = '<div class="spinner"></div><span>' + message + '</span>';
@@ -704,6 +821,28 @@
                 }, 2000);
             } else if (status === 'disconnected') {
                 connectionStatus.innerHTML = '<span style="color: #EF4444">✕</span><span>' + message + '</span>';
+            if (!initSupabase()) {
+                return;
+            }
+            
+            try {
+                showDebug('测试数据库连接...');
+                const { data, error } = await supabaseClient
+                    .from('rooms')
+                    .select('*')
+                    .limit(1);
+                
+                if (error) {
+                    showDebug('✗ 数据库连接失败: ' + error.message);
+                    showDebug('请确保已在 Supabase 中创建数据库表');
+                    return;
+                }
+                
+                showDebug('✓ 数据库连接成功');
+                showDebug('测试完成！');
+                
+            } catch (error) {
+                showDebug('✗ 测试失败: ' + error.message);
             }
         }
  
@@ -726,6 +865,13 @@
                 });
  
             if (error) {
+            try {
+                const { error } = await supabaseClient
+                    .from('rooms')
+                    .upsert({ room_id: roomCode });
+                if (error) throw error;
+                return true;
+            } catch (error) {
                 console.error('创建房间失败:', error);
                 return false;
             }
@@ -741,6 +887,14 @@
                 .limit(50);
  
             if (error) {
+            try {
+                const { data } = await supabaseClient
+                    .from('messages')
+                    .select('*')
+                    .eq('room_id', roomCode)
+                    .order('created_at', { ascending: true });
+                return data || [];
+            } catch (error) {
                 console.error('加载消息失败:', error);
                 return [];
             }
@@ -749,6 +903,8 @@
         }
  
         function renderMessages(messages) {
+            messagesContainer.innerHTML = '';
+            
             if (messages.length === 0) {
                 messagesContainer.innerHTML = `
                     <div class="empty-state">
@@ -756,10 +912,13 @@
                         <p>开始发送消息吧！<br>对方加入后即可实时收到消息。</p>
                     </div>
                 `;
+                messagesContainer.innerHTML = '<div style="text-align: center; color: #64748B; padding: 20px;">开始发送消息吧！</div>';
                 return;
             }
  
             messagesContainer.innerHTML = messages.map(msg => {
+            
+            messages.forEach(msg => {
                 const isOwn = msg.sender_nickname === currentNickname;
                 const time = new Date(msg.created_at);
                 
@@ -783,6 +942,12 @@
  
             const isOwn = message.sender_nickname === currentNickname;
             const time = new Date(message.created_at);
+                const div = document.createElement('div');
+                div.className = 'message ' + (isOwn ? 'own' : 'other');
+                div.innerHTML = !isOwn ? '<div style="font-size:12px; opacity:0.8; margin-bottom:4px;">' + msg.sender_nickname + '</div>' : '';
+                div.innerHTML += '<div>' + msg.content + '</div>';
+                messagesContainer.appendChild(div);
+            });
             
             const messageEl = document.createElement('div');
             messageEl.className = 'message ' + (isOwn ? 'own' : 'other');
@@ -794,6 +959,7 @@
             
             messagesContainer.appendChild(messageEl);
             scrollToBottom();
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
  
         function escapeHtml(text) {
@@ -817,6 +983,16 @@
                 .insert([message]);
  
             if (error) {
+            try {
+                const { error } = await supabaseClient
+                    .from('messages')
+                    .insert({
+                        room_id: currentRoom,
+                        sender_nickname: currentNickname,
+                        content: content
+                    });
+                if (error) throw error;
+            } catch (error) {
                 console.error('发送消息失败:', error);
                 showToast('发送失败，请重试');
             }
@@ -846,6 +1022,23 @@
                         addMessage(payload.new);
                     }
                 )
+            supabaseClient
+                .channel('room-' + roomCode)
+                .on('postgres_changes', {
+                    event: 'INSERT',
+                    schema: 'public',
+                    table: 'messages',
+                    filter: 'room_id=eq.' + roomCode
+                }, (payload) => {
+                    const msg = payload.new;
+                    const isOwn = msg.sender_nickname === currentNickname;
+                    const div = document.createElement('div');
+                    div.className = 'message ' + (isOwn ? 'own' : 'other');
+                    div.innerHTML = !isOwn ? '<div style="font-size:12px; opacity:0.8; margin-bottom:4px;">' + msg.sender_nickname + '</div>' : '';
+                    div.innerHTML += '<div>' + msg.content + '</div>';
+                    messagesContainer.appendChild(div);
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                })
                 .subscribe();
         }
  
@@ -909,6 +1102,14 @@
                 showToast('请先配置 Supabase！');
                 console.error('Supabase 未配置，请更新 SUPABASE_URL 和 SUPABASE_ANON_KEY');
                 return false;
+            debugInfo.innerHTML = '';
+            currentRoom = roomCode;
+            currentNickname = nickname;
+            
+            const exists = await createRoom(roomCode);
+            if (!exists) {
+                showDebug('创建房间失败');
+                return;
             }
  
             showConnectionStatus('connecting', '正在连接...');
@@ -991,19 +1192,30 @@
  
             sendBtn.disabled = true;
             connectionStatus.style.display = 'none';
+            roomCodeDisplay.textContent = roomCode;
+            const messages = await loadMessages(roomCode);
+            renderMessages(messages);
+            subscribeToMessages(roomCode);
+            
+            loginPage.style.display = 'none';
+            chatPage.style.display = 'flex';
         }
  
         function validateRoomCode(code) {
             return /^\d{6}$/.test(code);
         }
+        // 事件绑定
+        testBtn.addEventListener('click', testConnection);
  
         joinBtn.addEventListener('click', async () => {
+        createRoomBtn.addEventListener('click', async () => {
             const nickname = nicknameInput.value.trim();
             const roomCode = roomCodeInput.value.trim();
  
             if (!nickname) {
                 showToast('请输入昵称');
                 nicknameInput.focus();
+                alert('请输入昵称');
                 return;
             }
  
@@ -1030,14 +1242,20 @@
             if (!success) {
                 showToast('加入房间失败，请重试');
             }
+            const roomCode = generateRoomCode();
+            await joinRoom(roomCode, nickname);
+            alert('房间号: ' + roomCode);
         });
  
         createRoomBtn.addEventListener('click', async () => {
+        joinBtn.addEventListener('click', async () => {
             const nickname = nicknameInput.value.trim();
  
+            const roomCode = roomCodeInput.value.trim();
             if (!nickname) {
                 showToast('请输入昵称');
                 nicknameInput.focus();
+                alert('请输入昵称');
                 return;
             }
  
@@ -1053,6 +1271,68 @@
                 createRoomBtn.disabled = false;
                 joinBtn.disabled = false;
                 showToast('创建房间失败，请重试');
+            if (!roomCode || roomCode.length !== 6 || isNaN(roomCode)) {
+                alert('请输入正确的6位房间号');
+                return;
+            }
+            await joinRoom(roomCode, nickname);
+        });
+ 
+        testBtn.addEventListener('click', async () => {
+            debugInfo.style.display = 'block';
+            debugInfo.innerHTML = '<span style="color: blue;">正在测试连接...</span><br>';
+            
+            try {
+                debugInfo.innerHTML += '1. 检查配置...<br>';
+                
+                if (SUPABASE_URL === 'YOUR_SUPABASE_URL') {
+                    debugInfo.innerHTML += '<span style="color: red;">❌ 配置未更新</span><br>';
+                    showToast('请先配置 Supabase！');
+                    return;
+                }
+                
+                debugInfo.innerHTML += '<span style="color: green;">✓ 配置已更新</span><br>';
+                debugInfo.innerHTML += `URL: ${SUPABASE_URL.substring(0, 30)}...<br>`;
+                debugInfo.innerHTML += `KEY: ${SUPABASE_ANON_KEY.substring(0, 30)}...<br>`;
+                
+                debugInfo.innerHTML += '2. 初始化 Supabase...<br>';
+                initSupabase();
+                
+                if (!isConfigured || !supabaseClient) {
+                    debugInfo.innerHTML += '<span style="color: red;">❌ Supabase 初始化失败</span><br>';
+                    showToast('Supabase 初始化失败');
+                    return;
+                }
+                
+                debugInfo.innerHTML += '<span style="color: green;">✓ Supabase 初始化成功</span><br>';
+                
+                debugInfo.innerHTML += '3. 测试数据库连接...<br>';
+                const { data, error } = await supabaseClient
+                    .from('rooms')
+                    .select('room_id')
+                    .limit(1);
+                
+                if (error) {
+                    debugInfo.innerHTML += `<span style="color: red;">❌ 数据库连接失败: ${error.message}</span><br>`;
+                    showToast('数据库连接失败');
+                    return;
+                }
+                
+                debugInfo.innerHTML += `<span style="color: green;">✓ 数据库连接成功</span><br>`;
+                debugInfo.innerHTML += `返回数据: ${data ? JSON.stringify(data) : '空'}<br>`;
+                
+                debugInfo.innerHTML += '<span style="color: green;">✅ 所有测试通过！</span>';
+                showToast('连接测试成功');
+                
+            } catch (err) {
+                debugInfo.innerHTML += `<span style="color: red;">❌ 异常: ${err.message}</span><br>`;
+                console.error('测试异常:', err);
+                showToast('测试失败，请查看调试信息');
+        sendBtn.addEventListener('click', async () => {
+            const content = messageInput.value.trim();
+            if (content) {
+                await sendMessage(content);
+                messageInput.value = '';
             }
         });
  
@@ -1061,6 +1341,9 @@
                 e.preventDefault();
                 const content = messageInput.value;
                 if (content.trim()) {
+            if (e.key === 'Enter') {
+                const content = messageInput.value.trim();
+                if (content) {
                     await sendMessage(content);
                     messageInput.value = '';
                 }
@@ -1078,6 +1361,10 @@
  
         leaveBtn.addEventListener('click', () => {
             leaveRoom();
+            loginPage.style.display = 'block';
+            chatPage.style.display = 'none';
+            currentRoom = null;
+            currentNickname = null;
         });
  
         displayRoomCode.addEventListener('click', () => {
@@ -1123,6 +1410,7 @@
             }
         }
  
+        // 初始化
         initSupabase();
         setTimeout(testDatabaseConnection, 1000);
     <\/script>
