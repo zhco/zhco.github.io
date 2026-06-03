@@ -5,29 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>双人聊 - 实时在线聊天</title>
     <style>
-        :root {
-            --primary: #6366F1;
-            --primary-hover: #4F46E5;
-            --secondary: #F1F5F9;
-            --accent: #10B981;
-            --text: #1E293B;
-            --text-light: #64748B;
-            --bg: #F8FAFC;
-            --white: #FFFFFF;
-            --border: #E2E8F0;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
- 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
- 
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
@@ -36,539 +20,123 @@
             justify-content: center;
             padding: 20px;
         }
- 
         
         .container {
             width: 100%;
             max-width: 640px;
-            background: var(--white);
             background: white;
             border-radius: 16px;
-            box-shadow: var(--shadow-lg);
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             overflow: hidden;
-            animation: slideUp 0.5s ease-out;
         }
- 
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
- 
         
         .header {
-            background: var(--primary);
-            color: var(--white);
             background: #667eea;
             color: white;
             padding: 24px;
             text-align: center;
         }
- 
         
         .header h1 {
             font-size: 28px;
-            font-weight: 700;
             margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
         }
- 
+        
         .header p {
             font-size: 14px;
             opacity: 0.9;
         }
- 
         
         .content {
             padding: 32px 24px;
         }
- 
         
         .form-group {
             margin-bottom: 20px;
         }
- 
         
         .form-group label {
             display: block;
             font-size: 14px;
             font-weight: 600;
-            color: var(--text);
             color: #1E293B;
             margin-bottom: 8px;
         }
- 
-        .input-wrapper {
-            position: relative;
-        }
- 
-        .input-wrapper input {
         
         input {
             width: 100%;
             padding: 14px 16px;
-            padding-left: 44px;
             font-size: 16px;
-            border: 2px solid var(--border);
             border: 2px solid #E2E8F0;
             border-radius: 12px;
-            transition: all 0.3s ease;
             outline: none;
+            transition: border-color 0.3s;
         }
- 
-        .input-wrapper input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
         
         input:focus {
             border-color: #667eea;
         }
- 
-        .input-wrapper .icon {
-            position: absolute;
-            left: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 18px;
-            color: var(--text-light);
-        }
- 
-        .input-hint {
-            font-size: 12px;
-            color: var(--text-light);
-            margin-top: 6px;
-        }
- 
         
         .btn {
             width: 100%;
             padding: 16px;
             font-size: 16px;
             font-weight: 600;
-            color: var(--white);
-            background: var(--primary);
             color: white;
             background: #667eea;
             border: none;
             border-radius: 12px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            cursor: pointer;
             margin-top: 12px;
+            transition: all 0.3s;
         }
- 
         
         .btn:hover {
-            background: var(--primary-hover);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow);
             background: #5a67d8;
+            transform: translateY(-2px);
         }
- 
-        .btn:active {
-            transform: translateY(0);
-        }
- 
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
- 
         
         .btn-secondary {
-            background: var(--secondary);
-            color: var(--text);
-            margin-top: 12px;
             background: #f0f0f0;
             color: #1E293B;
         }
- 
         
         .btn-secondary:hover {
-            background: var(--border);
             background: #e0e0e0;
         }
- 
-        .divider {
-            display: flex;
-            align-items: center;
-            margin: 24px 0;
-            color: var(--text-light);
-            font-size: 14px;
-        }
- 
-        .divider::before,
-        .divider::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: var(--border);
-        }
- 
-        .divider span {
-            padding: 0 16px;
-        }
- 
         
         .tips {
-            background: var(--secondary);
             background: #f8fafc;
             border-radius: 12px;
             padding: 16px;
             margin-top: 24px;
         }
- 
         
         .tips h3 {
             font-size: 14px;
             font-weight: 600;
-            color: var(--text);
             color: #1E293B;
             margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
- 
         
         .tips ul {
             list-style: none;
             font-size: 13px;
-            color: var(--text-light);
             color: #64748B;
         }
- 
+        
         .tips li {
             margin-bottom: 8px;
             padding-left: 20px;
             position: relative;
         }
- 
+        
         .tips li::before {
             content: '•';
             position: absolute;
             left: 0;
-            color: var(--primary);
-            font-weight: bold;
+            color: #667eea;
         }
- 
-        /* Chat Page Styles */
-        .chat-container {
-        
-        .chatPage {
-            display: none;
-            flex-direction: column;
-            height: 600px;
-        }
- 
-        
-        .chat-header {
-            background: var(--primary);
-            color: var(--white);
-            background: #667eea;
-            color: white;
-            padding: 16px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
- 
-        .room-info {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
- 
-        .room-code {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
- 
-        .room-code:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
- 
-        .online-indicator {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 14px;
-        }
- 
-        .online-dot {
-            width: 8px;
-            height: 8px;
-            background: var(--accent);
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
- 
-        @keyframes pulse {
-            0%, 100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.5;
-            }
-        }
- 
-        .leave-btn {
-            background: rgba(255, 255, 255, 0.2);
-            color: var(--white);
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: background 0.3s;
-        }
- 
-        .leave-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
- 
-        
-        .messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px;
-            background: var(--bg);
-            background: #f8fafc;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
- 
-        
-        .message {
-            max-width: 75%;
-            padding: 12px 16px;
-            border-radius: 16px;
-            animation: fadeIn 0.3s ease;
-            max-width: 75%;
-        }
- 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
- 
-        
-        .message.own {
-            align-self: flex-end;
-            background: var(--primary);
-            color: var(--white);
-            background: #667eea;
-            color: white;
-            border-bottom-right-radius: 4px;
-        }
- 
-        
-        .message.other {
-            align-self: flex-start;
-            background: var(--white);
-            color: var(--text);
-            background: white;
-            color: #1E293B;
-            border-bottom-left-radius: 4px;
-            box-shadow: var(--shadow);
-        }
- 
-        .message-sender {
-            font-size: 12px;
-            font-weight: 600;
-            margin-bottom: 4px;
-            opacity: 0.8;
-        }
- 
-        .message-content {
-            font-size: 15px;
-            line-height: 1.5;
-            word-wrap: break-word;
-        }
- 
-        .message-time {
-            font-size: 11px;
-            margin-top: 4px;
-            opacity: 0.7;
-            text-align: right;
-        }
- 
-        .system-message {
-            text-align: center;
-            color: var(--text-light);
-            font-size: 13px;
-            padding: 8px;
-            opacity: 0.8;
-        }
- 
-        
-        .chat-input {
-            padding: 16px 20px;
-            background: var(--white);
-            border-top: 1px solid var(--border);
-            padding: 16px;
-            border-top: 1px solid #e0e0e0;
-            display: flex;
-            gap: 12px;
-        }
- 
-        
-        .chat-input input {
-            flex: 1;
-            padding: 14px 18px;
-            font-size: 15px;
-            border: 2px solid var(--border);
-            border-radius: 24px;
-            outline: none;
-            transition: border-color 0.3s;
-        }
- 
-        .chat-input input:focus {
-            border-color: var(--primary);
-        }
- 
-        
-        .send-btn {
-            width: 52px;
-            height: 52px;
-            border-radius: 50%;
-            background: var(--primary);
-            color: var(--white);
-            background: #667eea;
-            color: white;
-            border: none;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s;
-            font-size: 24px;
-        }
- 
-        .send-btn:hover {
-            background: var(--primary-hover);
-            transform: scale(1.05);
-        }
- 
-        .send-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
- 
-        .connection-status {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--white);
-            padding: 12px 24px;
-            border-radius: 24px;
-            box-shadow: var(--shadow-lg);
-            display: none;
-            align-items: center;
-            gap: 8px;
-            font-size: 14px;
-            font-weight: 500;
-            z-index: 100;
-            animation: slideDown 0.3s ease;
-        }
- 
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateX(-50%) translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(-50%) translateY(0);
-            }
-        }
- 
-        .connection-status.connecting {
-            color: #F59E0B;
-        }
- 
-        .connection-status.connected {
-            color: var(--accent);
-        }
- 
-        .connection-status.disconnected {
-            color: #EF4444;
-        }
- 
-        .spinner {
-            width: 16px;
-            height: 16px;
-            border: 2px solid var(--border);
-            border-top-color: var(--primary);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
- 
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
- 
-        .empty-state {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-            color: var(--text-light);
-            text-align: center;
-            padding: 40px;
-        }
- 
-        .empty-state .icon {
-            font-size: 48px;
-            margin-bottom: 16px;
-            opacity: 0.5;
-        }
- 
-        .empty-state p {
-            font-size: 15px;
-        }
- 
-        .toast {
-            position: fixed;
-            bottom: 100px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--text);
-            color: var(--white);
-            padding: 12px 24px;
         
         .debug {
             margin-top: 20px;
@@ -576,35 +144,181 @@
             background: #fff3cd;
             border: 1px solid #ffc107;
             border-radius: 8px;
-            font-size: 14px;
-            opacity: 0;
-            transition: opacity 0.3s;
-            z-index: 100;
             font-family: monospace;
             font-size: 13px;
+            max-height: 200px;
+            overflow-y: auto;
         }
- 
-        .toast.show {
-            opacity: 1;
         
-        .debug div {
-            margin-bottom: 8px 0;
+        .debug-error {
+            background: #f8d7da;
+            border-color: #f5c2c7;
         }
- 
+        
+        .debug-success {
+            background: #d1e7dd;
+            border-color: #badbcc;
+        }
+        
+        .chat-container {
+            display: none;
+            flex-direction: column;
+            height: 600px;
+        }
+        
+        .chat-header {
+            background: #667eea;
+            color: white;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .room-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .room-code {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .room-code:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .leave-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .leave-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .message {
+            padding: 12px 16px;
+            border-radius: 16px;
+            max-width: 75%;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .message.own {
+            align-self: flex-end;
+            background: #667eea;
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+        
+        .message.other {
+            align-self: flex-start;
+            background: white;
+            color: #1E293B;
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .message-sender {
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            opacity: 0.8;
+        }
+        
+        .message-content {
+            font-size: 15px;
+            line-height: 1.5;
+            word-wrap: break-word;
+        }
+        
+        .message-time {
+            font-size: 11px;
+            margin-top: 4px;
+            opacity: 0.7;
+            text-align: right;
+        }
+        
+        .chat-input {
+            padding: 16px;
+            border-top: 1px solid #e0e0e0;
+            background: white;
+            display: flex;
+            gap: 12px;
+        }
+        
+        .chat-input input {
+            flex: 1;
+            border-radius: 24px;
+        }
+        
+        .send-btn {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: #667eea;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            transition: all 0.3s;
+        }
+        
+        .send-btn:hover {
+            background: #5a67d8;
+            transform: scale(1.05);
+        }
+        
+        .empty-state {
+            text-align: center;
+            color: #64748B;
+            padding: 40px;
+        }
+        
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
         
         @media (max-width: 640px) {
             body {
                 padding: 0;
             }
- 
+            
             .container {
                 max-width: 100%;
                 border-radius: 0;
                 min-height: 100vh;
             }
- 
+            
             .chat-container {
-            .chatPage {
                 height: 100vh;
                 height: 100dvh;
             }
@@ -612,15 +326,8 @@
     </style>
 </head>
 <body>
-    <div class="connection-status" id="connectionStatus">
-        <div class="spinner"></div>
-        <span>连接中...</span>
-    </div>
- 
-    <div class="toast" id="toast"></div>
- 
     <div class="container">
-        <div id="loginPage" class="login-page">
+        <!-- 登录页面 -->
         <div id="loginPage">
             <div class="header">
                 <h1>💬 双人聊</h1>
@@ -628,46 +335,15 @@
             </div>
             <div class="content">
                 <div class="form-group">
-                    <label for="nickname">你的昵称</label>
-                    <div class="input-wrapper">
-                        <span class="icon">👤</span>
-                        <input type="text" id="nickname" placeholder="输入你的昵称" maxlength="20" autocomplete="off">
-                    </div>
-                    <div class="input-hint">用于消息显示，不会泄露个人信息</div>
                     <label>你的昵称</label>
-                    <input type="text" id="nickname" placeholder="输入你的昵称">
+                    <input type="text" id="nickname" placeholder="输入你的昵称" maxlength="20">
                 </div>
- 
-                <div class="divider"><span>选择操作</span></div>
- 
+                
                 <div class="form-group">
-                    <label for="roomCode">房间号</label>
-                    <div class="input-wrapper">
-                        <span class="icon">🔢</span>
-                        <input type="text" id="roomCode" placeholder="输入6位房间号" maxlength="6" inputmode="numeric" autocomplete="off">
-                    </div>
-                    <div class="input-hint">向对方索取房间号，或创建新房间</div>
                     <label>房间号（可选）</label>
-                    <input type="text" id="roomCode" placeholder="输入6位房间号">
+                    <input type="text" id="roomCode" placeholder="输入6位房间号加入" maxlength="6">
                 </div>
- 
-                <button class="btn" id="joinBtn">
-                    <span>🚀</span>
-                    <span>加入房间</span>
-                </button>
- 
-                <button class="btn btn-secondary" id="createRoomBtn">
-                    <span>✨</span>
-                    <span>创建新房间</span>
-                </button>
- 
-                <button class="btn btn-secondary" id="testBtn" style="margin-top: 12px;">
-                    <span>🔍</span>
-                    <span>测试连接</span>
-                </button>
- 
-                <div id="debugInfo" style="margin-top: 16px; padding: 12px; background: #f0f0f0; border-radius: 8px; font-family: monospace; font-size: 12px; display: none;"></div>
- 
+                
                 <button class="btn" id="joinBtn">🚀 加入房间</button>
                 <button class="btn btn-secondary" id="createRoomBtn">✨ 创建新房间</button>
                 <button class="btn btn-secondary" id="testBtn">🔍 测试连接</button>
@@ -676,154 +352,296 @@
                 
                 <div class="tips">
                     <h3>💡 使用提示</h3>
-                    <h3>使用提示</h3>
                     <ul>
-                        <li>创建房间后，你会获得一个6位数的房间号</li>
-                        <li>将房间号分享给聊天对象，对方输入即可加入</li>
+                        <li>点击"创建新房间"会生成6位房间号</li>
+                        <li>将房间号分享给朋友，他人输入即可加入</li>
                         <li>无需注册账号，保护你的隐私</li>
                         <li>消息实时推送，无需刷新页面</li>
-                        <li>创建房间后，会获得6位房间号</li>
-                        <li>分享给朋友，输入房间号即可聊天</li>
-                        <li>无需注册账号，保护隐私</li>
-                        <li>实时消息，无需刷新</li>
                     </ul>
                 </div>
             </div>
         </div>
- 
-        <div id="chatPage" class="chat-container">
         
-        <div id="chatPage" class="chatPage">
+        <!-- 聊天页面 -->
+        <div id="chatPage" class="chat-container">
             <div class="chat-header">
                 <div class="room-info">
-                    <div class="room-code" id="displayRoomCode" title="点击复制房间号">
-                        <span>🔗</span>
-                        <span id="roomCodeText"></span>
-                    </div>
-                    <div class="online-indicator">
-                        <div class="online-dot"></div>
-                        <span id="onlineCount">1 人在线</span>
-                    </div>
+                    <div class="room-code" id="roomCodeDisplay" title="点击复制">🔗 <span id="roomCodeText">000000</span></div>
                 </div>
-                <button class="leave-btn" id="leaveBtn">
-                    🚪 离开
-                </button>
-                <div>房间：<span id="roomCodeDisplay">123456</span></div>
-                <button id="leaveBtn" style="background: rgba(255,255,255,0.2); border: none; padding: 8px 16px; border-radius: 8px; color: white; cursor: pointer;">离开</button>
+                <button class="leave-btn" id="leaveBtn">🚪 离开</button>
             </div>
- 
+            
             <div class="messages" id="messagesContainer">
                 <div class="empty-state">
-                    <div class="icon">💬</div>
+                    <div class="empty-state-icon">💬</div>
                     <p>开始发送消息吧！<br>对方加入后即可实时收到消息。</p>
                 </div>
-                <div style="text-align: center; color: #64748B; padding: 20px;">开始发送消息吧！</div>
             </div>
- 
+            
             <div class="chat-input">
-                <input type="text" id="messageInput" placeholder="输入消息..." maxlength="500" autocomplete="off">
-                <button class="send-btn" id="sendBtn" disabled>
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="22" y1="2" x2="11" y2="13"></line>
-                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                    </svg>
-                </button>
-                <input type="text" id="messageInput" placeholder="输入消息...">
-                <button class="send-btn" id="sendBtn">→</button>
+                <input type="text" id="messageInput" placeholder="输入消息..." maxlength="500">
+                <button class="send-btn" id="sendBtn">➤</button>
             </div>
         </div>
     </div>
- 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"><\/script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
+        // ============================================
+        // 配置区域 - 请替换为你自己的 Supabase 配置
+        // ============================================
         const SUPABASE_URL = 'https://fedlhohopipeyrmdctfr.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFub24iLCJpYXQiOjE3ODAyNTMxMTgsImV4cCI6MjA5NTgyOTExOH0.aQ5h9c11gObhvvCJpehPwRk7tn_7vfjtPMuJz7oXMDI';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZlZGxob2hvcGlwZXlybWRjdGZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyNTMxMTgsImV4cCI6MjA5NTgyOTExOH0.aQ5h9c11gObhvvCJpehPwRk7tn_7vfjtPMuJz7oXMDI';
- 
-        let supabaseClient;
+
+        // ============================================
+        // 全局变量
+        // ============================================
         let supabaseClient = null;
         let currentRoom = null;
         let currentNickname = null;
-        let channel = null;
-        let messageSubscription = null;
-        let isConfigured = false;
- 
+
+        // ============================================
+        // DOM 元素
+        // ============================================
         const loginPage = document.getElementById('loginPage');
         const chatPage = document.getElementById('chatPage');
-        const connectionStatus = document.getElementById('connectionStatus');
-        const toast = document.getElementById('toast');
- 
         const nicknameInput = document.getElementById('nickname');
         const roomCodeInput = document.getElementById('roomCode');
         const joinBtn = document.getElementById('joinBtn');
-4 lines hidden
+        const createRoomBtn = document.getElementById('createRoomBtn');
+        const testBtn = document.getElementById('testBtn');
+        const debugInfo = document.getElementById('debugInfo');
+        const messagesContainer = document.getElementById('messagesContainer');
         const messageInput = document.getElementById('messageInput');
         const sendBtn = document.getElementById('sendBtn');
         const leaveBtn = document.getElementById('leaveBtn');
         const roomCodeText = document.getElementById('roomCodeText');
-        const onlineCount = document.getElementById('onlineCount');
-        const displayRoomCode = document.getElementById('displayRoomCode');
         const roomCodeDisplay = document.getElementById('roomCodeDisplay');
- 
-        function showDebug(msg) {
+
+        // ============================================
+        // 工具函数
+        // ============================================
+        
+        function showDebug(msg, type = 'info') {
             debugInfo.style.display = 'block';
-            debugInfo.innerHTML += '<div>' + msg + '</div>';
-            console.log(msg);
-        }
- 
-        function initSupabase() {
-            if (SUPABASE_URL === 'YOUR_SUPABASE_URL' || SUPABASE_ANON_KEY === 'YOUR_SUPABASE_ANON_KEY') {
-                console.warn('Supabase 未配置，请先更新 SPEC.md 中的配置信息');
-                isConfigured = false;
-                return;
+            debugInfo.className = 'debug';
+            
+            if (type === 'error') {
+                debugInfo.classList.add('debug-error');
+            } else if (type === 'success') {
+                debugInfo.classList.add('debug-success');
             }
             
-            try {
-                showDebug('初始化 Supabase...');
-                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-                isConfigured = true;
-                console.log('Supabase 初始化成功');
-                showDebug('✓ Supabase 初始化成功');
-                return true;
-            } catch (error) {
-                console.error('Supabase 初始化失败:', error);
-                isConfigured = false;
-                showDebug('✗ Supabase 初始化失败: ' + error.message);
-                return false;
-            }
+            const time = new Date().toLocaleTimeString();
+            debugInfo.innerHTML += `<div>[${time}] ${msg}</div>`;
+            debugInfo.scrollTop = debugInfo.scrollHeight;
+            console.log(msg);
         }
- 
+
+        function clearDebug() {
+            debugInfo.innerHTML = '';
+            debugInfo.style.display = 'none';
+            debugInfo.className = 'debug';
+        }
+
         function generateRoomCode() {
             return Math.floor(100000 + Math.random() * 900000).toString();
         }
- 
-        function showToast(message) {
-            toast.textContent = message;
-            toast.classList.add('show');
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
+
+        function formatTime(date) {
+            const h = date.getHours().toString().padStart(2, '0');
+            const m = date.getMinutes().toString().padStart(2, '0');
+            return `${h}:${m}`;
         }
- 
-        function showConnectionStatus(status, message) {
-            connectionStatus.style.display = 'flex';
-            connectionStatus.className = 'connection-status ' + status;
-        async function testConnection() {
-            debugInfo.innerHTML = '';
-            showDebug('开始测试...');
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // ============================================
+        // Supabase 初始化
+        // ============================================
+        function initSupabase() {
+            if (!supabaseClient) {
+                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            }
+            return !!supabaseClient;
+        }
+
+        // ============================================
+        // 数据库操作
+        // ============================================
+        
+        async function createRoom(roomCode) {
+            showDebug('创建房间...');
+            try {
+                const { error } = await supabaseClient
+                    .from('rooms')
+                    .upsert({ 
+                        room_id: roomCode,
+                        created_at: new Date().toISOString()
+                    });
+                
+                if (error) throw error;
+                showDebug('✓ 房间创建成功', 'success');
+                return true;
+            } catch (error) {
+                showDebug('✗ 创建房间失败: ' + error.message, 'error');
+                return false;
+            }
+        }
+
+        async function loadMessages(roomCode) {
+            showDebug('加载历史消息...');
+            try {
+                const { data, error } = await supabaseClient
+                    .from('messages')
+                    .select('*')
+                    .eq('room_id', roomCode)
+                    .order('created_at', { ascending: true })
+                    .limit(50);
+                
+                if (error) throw error;
+                showDebug(`✓ 加载了 ${data?.length || 0} 条消息`, 'success');
+                return data || [];
+            } catch (error) {
+                showDebug('✗ 加载消息失败: ' + error.message, 'error');
+                return [];
+            }
+        }
+
+        async function sendMessage(content) {
+            if (!content.trim() || !currentRoom) return;
             
-            if (status === 'connecting') {
-                connectionStatus.innerHTML = '<div class="spinner"></div><span>' + message + '</span>';
-            } else if (status === 'connected') {
-                connectionStatus.innerHTML = '<span style="color: var(--accent)">✓</span><span>' + message + '</span>';
-                setTimeout(() => {
-                    connectionStatus.style.display = 'none';
-                }, 2000);
-            } else if (status === 'disconnected') {
-                connectionStatus.innerHTML = '<span style="color: #EF4444">✕</span><span>' + message + '</span>';
+            try {
+                const { error } = await supabaseClient
+                    .from('messages')
+                    .insert({
+                        room_id: currentRoom,
+                        sender_nickname: currentNickname,
+                        content: content.trim()
+                    });
+                
+                if (error) throw error;
+            } catch (error) {
+                console.error('发送消息失败:', error);
+            }
+        }
+
+        // ============================================
+        // 实时订阅
+        // ============================================
+        function subscribeToMessages(roomCode) {
+            showDebug('订阅实时消息...');
+            
+            supabaseClient
+                .channel('room-' + roomCode)
+                .on('postgres_changes', {
+                    event: 'INSERT',
+                    schema: 'public',
+                    table: 'messages',
+                    filter: 'room_id=eq.' + roomCode
+                }, (payload) => {
+                    addMessageToUI(payload.new);
+                })
+                .subscribe((status) => {
+                    if (status === 'SUBSCRIBED') {
+                        showDebug('✓ 实时订阅成功', 'success');
+                    }
+                });
+        }
+
+        function addMessageToUI(msg) {
+            // 移除空状态提示
+            const emptyState = messagesContainer.querySelector('.empty-state');
+            if (emptyState) {
+                emptyState.remove();
+            }
+
+            const isOwn = msg.sender_nickname === currentNickname;
+            const time = new Date(msg.created_at);
+            
+            const div = document.createElement('div');
+            div.className = 'message ' + (isOwn ? 'own' : 'other');
+            div.innerHTML = `
+                ${!isOwn ? '<div class="message-sender">' + escapeHtml(msg.sender_nickname) + '</div>' : ''}
+                <div class="message-content">${escapeHtml(msg.content)}</div>
+                <div class="message-time">${formatTime(time)}</div>
+            `;
+            
+            messagesContainer.appendChild(div);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        // ============================================
+        // 页面切换
+        // ============================================
+        async function joinRoom(roomCode, nickname) {
+            clearDebug();
+            showDebug('正在加入房间...');
+            
+            currentRoom = roomCode;
+            currentNickname = nickname;
+            
+            // 创建房间
+            const created = await createRoom(roomCode);
+            if (!created) return false;
+            
+            // 加载历史消息
+            const messages = await loadMessages(roomCode);
+            
+            // 显示聊天页面
+            roomCodeText.textContent = roomCode;
+            loginPage.style.display = 'none';
+            chatPage.style.display = 'flex';
+            
+            // 渲染历史消息
+            if (messages.length === 0) {
+                messagesContainer.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">💬</div>
+                        <p>开始发送消息吧！<br>对方加入后即可实时收到消息。</p>
+                    </div>
+                `;
+            } else {
+                messagesContainer.innerHTML = '';
+                messages.forEach(msg => addMessageToUI(msg));
+            }
+            
+            // 订阅实时消息
+            subscribeToMessages(roomCode);
+            
+            return true;
+        }
+
+        function leaveRoom() {
+            currentRoom = null;
+            currentNickname = null;
+            messagesContainer.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">💬</div>
+                    <p>开始发送消息吧！<br>对方加入后即可实时收到消息。</p>
+                </div>
+            `;
+            chatPage.style.display = 'none';
+            loginPage.style.display = 'block';
+            clearDebug();
+        }
+
+        // ============================================
+        // 测试连接
+        // ============================================
+        async function testConnection() {
+            clearDebug();
+            showDebug('开始测试 Supabase 连接...');
+            
             if (!initSupabase()) {
+                showDebug('✗ Supabase 初始化失败', 'error');
                 return;
             }
+            showDebug('✓ Supabase 初始化成功', 'success');
             
             try {
                 showDebug('测试数据库连接...');
@@ -833,586 +651,110 @@
                     .limit(1);
                 
                 if (error) {
-                    showDebug('✗ 数据库连接失败: ' + error.message);
-                    showDebug('请确保已在 Supabase 中创建数据库表');
+                    showDebug('✗ 数据库连接失败: ' + error.message, 'error');
+                    showDebug('请确保已创建 rooms 表并配置 RLS 策略', 'error');
                     return;
                 }
                 
-                showDebug('✓ 数据库连接成功');
-                showDebug('测试完成！');
+                showDebug('✓ 数据库连接成功！', 'success');
+                showDebug('应用已准备就绪，可以开始使用了！', 'success');
                 
             } catch (error) {
-                showDebug('✗ 测试失败: ' + error.message);
+                showDebug('✗ 测试失败: ' + error.message, 'error');
             }
         }
- 
-        function formatTime(date) {
-            const hours = date.getHours().toString().padStart(2, '0');
-            const minutes = date.getMinutes().toString().padStart(2, '0');
-            return hours + ':' + minutes;
-        }
- 
-        function scrollToBottom() {
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }
- 
-        async function createRoom(roomCode) {
-            const { error } = await supabaseClient
-                .from('rooms')
-                .upsert({ 
-                    room_id: roomCode,
-                    last_activity: new Date().toISOString()
-                });
- 
-            if (error) {
-            try {
-                const { error } = await supabaseClient
-                    .from('rooms')
-                    .upsert({ room_id: roomCode });
-                if (error) throw error;
-                return true;
-            } catch (error) {
-                console.error('创建房间失败:', error);
-                return false;
-            }
-            return true;
-        }
- 
-        async function loadMessages(roomCode) {
-            const { data: messages, error } = await supabaseClient
-                .from('messages')
-                .select('*')
-                .eq('room_id', roomCode)
-                .order('created_at', { ascending: true })
-                .limit(50);
- 
-            if (error) {
-            try {
-                const { data } = await supabaseClient
-                    .from('messages')
-                    .select('*')
-                    .eq('room_id', roomCode)
-                    .order('created_at', { ascending: true });
-                return data || [];
-            } catch (error) {
-                console.error('加载消息失败:', error);
-                return [];
-            }
- 
-            return messages || [];
-        }
- 
-        function renderMessages(messages) {
-            messagesContainer.innerHTML = '';
-            
-            if (messages.length === 0) {
-                messagesContainer.innerHTML = `
-                    <div class="empty-state">
-                        <div class="icon">💬</div>
-                        <p>开始发送消息吧！<br>对方加入后即可实时收到消息。</p>
-                    </div>
-                `;
-                messagesContainer.innerHTML = '<div style="text-align: center; color: #64748B; padding: 20px;">开始发送消息吧！</div>';
-                return;
-            }
- 
-            messagesContainer.innerHTML = messages.map(msg => {
-            
-            messages.forEach(msg => {
-                const isOwn = msg.sender_nickname === currentNickname;
-                const time = new Date(msg.created_at);
-                
-                return `
-                    <div class="message ${isOwn ? 'own' : 'other'}">
-                        ${!isOwn ? '<div class="message-sender">' + escapeHtml(msg.sender_nickname) + '</div>' : ''}
-                        <div class="message-content">${escapeHtml(msg.content)}</div>
-                        <div class="message-time">${formatTime(time)}</div>
-                    </div>
-                `;
-            }).join('');
- 
-            scrollToBottom();
-        }
- 
-        function addMessage(message) {
-            const emptyState = messagesContainer.querySelector('.empty-state');
-            if (emptyState) {
-                emptyState.remove();
-            }
- 
-            const isOwn = message.sender_nickname === currentNickname;
-            const time = new Date(message.created_at);
-                const div = document.createElement('div');
-                div.className = 'message ' + (isOwn ? 'own' : 'other');
-                div.innerHTML = !isOwn ? '<div style="font-size:12px; opacity:0.8; margin-bottom:4px;">' + msg.sender_nickname + '</div>' : '';
-                div.innerHTML += '<div>' + msg.content + '</div>';
-                messagesContainer.appendChild(div);
-            });
-            
-            const messageEl = document.createElement('div');
-            messageEl.className = 'message ' + (isOwn ? 'own' : 'other');
-            messageEl.innerHTML = `
-                ${!isOwn ? '<div class="message-sender">' + escapeHtml(message.sender_nickname) + '</div>' : ''}
-                <div class="message-content">${escapeHtml(message.content)}</div>
-                <div class="message-time">${formatTime(time)}</div>
-            `;
-            
-            messagesContainer.appendChild(messageEl);
-            scrollToBottom();
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }
- 
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
- 
-        async function sendMessage(content) {
-            if (!content.trim() || !currentRoom) return;
- 
-            const message = {
-                room_id: currentRoom,
-                sender_nickname: currentNickname,
-                content: content.trim(),
-                created_at: new Date().toISOString()
-            };
- 
-            const { error } = await supabaseClient
-                .from('messages')
-                .insert([message]);
- 
-            if (error) {
-            try {
-                const { error } = await supabaseClient
-                    .from('messages')
-                    .insert({
-                        room_id: currentRoom,
-                        sender_nickname: currentNickname,
-                        content: content
-                    });
-                if (error) throw error;
-            } catch (error) {
-                console.error('发送消息失败:', error);
-                showToast('发送失败，请重试');
-            }
- 
-            await supabaseClient
-                .from('rooms')
-                .update({ last_activity: new Date().toISOString() })
-                .eq('room_id', currentRoom);
-        }
- 
-        function subscribeToMessages(roomCode) {
-            if (messageSubscription) {
-                messageSubscription.unsubscribe();
-            }
- 
-            messageSubscription = supabaseClient
-                .channel('room-messages-' + roomCode)
-                .on(
-                    'postgres_changes',
-                    {
-                        event: 'INSERT',
-                        schema: 'public',
-                        table: 'messages',
-                        filter: 'room_id=eq.' + roomCode
-                    },
-                    (payload) => {
-                        addMessage(payload.new);
-                    }
-                )
-            supabaseClient
-                .channel('room-' + roomCode)
-                .on('postgres_changes', {
-                    event: 'INSERT',
-                    schema: 'public',
-                    table: 'messages',
-                    filter: 'room_id=eq.' + roomCode
-                }, (payload) => {
-                    const msg = payload.new;
-                    const isOwn = msg.sender_nickname === currentNickname;
-                    const div = document.createElement('div');
-                    div.className = 'message ' + (isOwn ? 'own' : 'other');
-                    div.innerHTML = !isOwn ? '<div style="font-size:12px; opacity:0.8; margin-bottom:4px;">' + msg.sender_nickname + '</div>' : '';
-                    div.innerHTML += '<div>' + msg.content + '</div>';
-                    messagesContainer.appendChild(div);
-                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
-                })
-                .subscribe();
-        }
- 
-        function subscribeToPresence(roomCode) {
-            if (channel) {
-                channel.unsubscribe();
-            }
- 
-            channel = supabaseClient.channel('room-presence-' + roomCode);
- 
-            channel
-                .on('presence', { event: 'sync' }, () => {
-                    const state = channel.presenceState();
-                    const count = Object.keys(state).length;
-                    onlineCount.textContent = count + ' 人在线';
-                })
-                .on('presence', { event: 'join' }, ({ newPresences }) => {
-                    const name = newPresences[0]?.nickname || '未知用户';
-                    addSystemMessage(name + ' 加入了房间');
-                    updatePresence();
-                })
-                .on('presence', { event: 'leave' }, ({ leftPresences }) => {
-                    const name = leftPresences[0]?.nickname || '未知用户';
-                    addSystemMessage(name + ' 离开了房间');
-                    updatePresence();
-                })
-                .subscribe(async (status) => {
-                    if (status === 'SUBSCRIBED') {
-                        await channel.track({
-                            nickname: currentNickname,
-                            online_at: new Date().toISOString()
-                        });
-                    }
-                });
-        }
- 
-        async function updatePresence() {
-            if (channel) {
-                await channel.track({
-                    nickname: currentNickname,
-                    online_at: new Date().toISOString()
-                });
-            }
-        }
- 
-        function addSystemMessage(message) {
-            const emptyState = messagesContainer.querySelector('.empty-state');
-            if (emptyState) {
-                emptyState.remove();
-            }
- 
-            const msgEl = document.createElement('div');
-            msgEl.className = 'system-message';
-            msgEl.textContent = message;
-            messagesContainer.appendChild(msgEl);
-            scrollToBottom();
-        }
- 
-        async function joinRoom(roomCode, nickname) {
-            if (!isConfigured) {
-                showToast('请先配置 Supabase！');
-                console.error('Supabase 未配置，请更新 SUPABASE_URL 和 SUPABASE_ANON_KEY');
-                return false;
-            debugInfo.innerHTML = '';
-            currentRoom = roomCode;
-            currentNickname = nickname;
-            
-            const exists = await createRoom(roomCode);
-            if (!exists) {
-                showDebug('创建房间失败');
-                return;
-            }
- 
-            showConnectionStatus('connecting', '正在连接...');
- 
-            try {
-                const exists = await checkRoomExists(roomCode);
-                
-                if (!exists) {
-                    const created = await createRoom(roomCode);
-                    if (!created) {
-                        showConnectionStatus('disconnected', '房间创建失败');
-                        setTimeout(() => {
-                            connectionStatus.style.display = 'none';
-                        }, 2000);
-                        return false;
-                    }
-                }
- 
-                const messages = await loadMessages(roomCode);
-                
-                currentRoom = roomCode;
-                currentNickname = nickname;
- 
-                loginPage.style.display = 'none';
-                chatPage.style.display = 'flex';
-                roomCodeText.textContent = roomCode;
- 
-                renderMessages(messages);
-                subscribeToMessages(roomCode);
-                subscribeToPresence(roomCode);
- 
-                showConnectionStatus('connected', '已连接');
-                sendBtn.disabled = false;
- 
-                return true;
- 
-            } catch (error) {
-                console.error('加入房间失败:', error);
-                showConnectionStatus('disconnected', '连接失败');
-                setTimeout(() => {
-                    connectionStatus.style.display = 'none';
-                }, 2000);
-                return false;
-            }
-        }
- 
-        async function checkRoomExists(roomCode) {
-            const { data, error } = await supabaseClient
-                .from('rooms')
-                .select('room_id')
-                .eq('room_id', roomCode)
-                .single();
- 
-            return !!data;
-        }
- 
-        function leaveRoom() {
-            if (channel) {
-                channel.unsubscribe();
-                channel = null;
-            }
- 
-            if (messageSubscription) {
-                messageSubscription.unsubscribe();
-                messageSubscription = null;
-            }
- 
-            currentRoom = null;
-            currentNickname = null;
- 
-            chatPage.style.display = 'none';
-            loginPage.style.display = 'block';
-            
-            messagesContainer.innerHTML = `
-                <div class="empty-state">
-                    <div class="icon">💬</div>
-                    <p>开始发送消息吧！<br>对方加入后即可实时收到消息。</p>
-                </div>
-            `;
- 
-            sendBtn.disabled = true;
-            connectionStatus.style.display = 'none';
-            roomCodeDisplay.textContent = roomCode;
-            const messages = await loadMessages(roomCode);
-            renderMessages(messages);
-            subscribeToMessages(roomCode);
-            
-            loginPage.style.display = 'none';
-            chatPage.style.display = 'flex';
-        }
- 
-        function validateRoomCode(code) {
-            return /^\d{6}$/.test(code);
-        }
+
+        // ============================================
         // 事件绑定
+        // ============================================
+        
+        // 测试连接
         testBtn.addEventListener('click', testConnection);
- 
-        joinBtn.addEventListener('click', async () => {
-        createRoomBtn.addEventListener('click', async () => {
-            const nickname = nicknameInput.value.trim();
-            const roomCode = roomCodeInput.value.trim();
- 
-            if (!nickname) {
-                showToast('请输入昵称');
-                nicknameInput.focus();
-                alert('请输入昵称');
-                return;
-            }
- 
-            if (!roomCode) {
-                showToast('请输入房间号');
-                roomCodeInput.focus();
-                return;
-            }
- 
-            if (!validateRoomCode(roomCode)) {
-                showToast('房间号必须是6位数字');
-                roomCodeInput.focus();
-                return;
-            }
- 
-            joinBtn.disabled = true;
-            createRoomBtn.disabled = true;
- 
-            const success = await joinRoom(roomCode, nickname);
- 
-            joinBtn.disabled = false;
-            createRoomBtn.disabled = false;
- 
-            if (!success) {
-                showToast('加入房间失败，请重试');
-            }
-            const roomCode = generateRoomCode();
-            await joinRoom(roomCode, nickname);
-            alert('房间号: ' + roomCode);
-        });
- 
-        createRoomBtn.addEventListener('click', async () => {
+
+        // 加入房间
         joinBtn.addEventListener('click', async () => {
             const nickname = nicknameInput.value.trim();
- 
             const roomCode = roomCodeInput.value.trim();
-            if (!nickname) {
-                showToast('请输入昵称');
-                nicknameInput.focus();
-                alert('请输入昵称');
-                return;
-            }
- 
-            createRoomBtn.disabled = true;
-            joinBtn.disabled = true;
- 
-            const roomCode = generateRoomCode();
-            const success = await joinRoom(roomCode, nickname);
- 
-            if (success) {
-                showToast('房间已创建：' + roomCode);
-            } else {
-                createRoomBtn.disabled = false;
-                joinBtn.disabled = false;
-                showToast('创建房间失败，请重试');
-            if (!roomCode || roomCode.length !== 6 || isNaN(roomCode)) {
-                alert('请输入正确的6位房间号');
-                return;
-            }
-            await joinRoom(roomCode, nickname);
-        });
- 
-        testBtn.addEventListener('click', async () => {
-            debugInfo.style.display = 'block';
-            debugInfo.innerHTML = '<span style="color: blue;">正在测试连接...</span><br>';
             
-            try {
-                debugInfo.innerHTML += '1. 检查配置...<br>';
-                
-                if (SUPABASE_URL === 'YOUR_SUPABASE_URL') {
-                    debugInfo.innerHTML += '<span style="color: red;">❌ 配置未更新</span><br>';
-                    showToast('请先配置 Supabase！');
-                    return;
-                }
-                
-                debugInfo.innerHTML += '<span style="color: green;">✓ 配置已更新</span><br>';
-                debugInfo.innerHTML += `URL: ${SUPABASE_URL.substring(0, 30)}...<br>`;
-                debugInfo.innerHTML += `KEY: ${SUPABASE_ANON_KEY.substring(0, 30)}...<br>`;
-                
-                debugInfo.innerHTML += '2. 初始化 Supabase...<br>';
-                initSupabase();
-                
-                if (!isConfigured || !supabaseClient) {
-                    debugInfo.innerHTML += '<span style="color: red;">❌ Supabase 初始化失败</span><br>';
-                    showToast('Supabase 初始化失败');
-                    return;
-                }
-                
-                debugInfo.innerHTML += '<span style="color: green;">✓ Supabase 初始化成功</span><br>';
-                
-                debugInfo.innerHTML += '3. 测试数据库连接...<br>';
-                const { data, error } = await supabaseClient
-                    .from('rooms')
-                    .select('room_id')
-                    .limit(1);
-                
-                if (error) {
-                    debugInfo.innerHTML += `<span style="color: red;">❌ 数据库连接失败: ${error.message}</span><br>`;
-                    showToast('数据库连接失败');
-                    return;
-                }
-                
-                debugInfo.innerHTML += `<span style="color: green;">✓ 数据库连接成功</span><br>`;
-                debugInfo.innerHTML += `返回数据: ${data ? JSON.stringify(data) : '空'}<br>`;
-                
-                debugInfo.innerHTML += '<span style="color: green;">✅ 所有测试通过！</span>';
-                showToast('连接测试成功');
-                
-            } catch (err) {
-                debugInfo.innerHTML += `<span style="color: red;">❌ 异常: ${err.message}</span><br>`;
-                console.error('测试异常:', err);
-                showToast('测试失败，请查看调试信息');
-        sendBtn.addEventListener('click', async () => {
+            if (!nickname) {
+                alert('请输入昵称');
+                nicknameInput.focus();
+                return;
+            }
+            
+            if (!roomCode || roomCode.length !== 6 || !/^\d+$/.test(roomCode)) {
+                alert('请输入正确的6位房间号');
+                roomCodeInput.focus();
+                return;
+            }
+            
+            if (!initSupabase()) {
+                alert('Supabase 初始化失败');
+                return;
+            }
+            
+            await joinRoom(roomCode, nickname);
+        });
+
+        // 创建房间
+        createRoomBtn.addEventListener('click', async () => {
+            const nickname = nicknameInput.value.trim();
+            
+            if (!nickname) {
+                alert('请输入昵称');
+                nicknameInput.focus();
+                return;
+            }
+            
+            if (!initSupabase()) {
+                alert('Supabase 初始化失败');
+                return;
+            }
+            
+            const roomCode = generateRoomCode();
+            const success = await joinRoom(roomCode, nickname);
+            
+            if (success) {
+                // 复制房间号到剪贴板
+                await navigator.clipboard.writeText(roomCode);
+                alert('房间号: ' + roomCode + '\n已复制到剪贴板！');
+            }
+        });
+
+        // 发送消息
+        async function handleSendMessage() {
             const content = messageInput.value.trim();
             if (content) {
                 await sendMessage(content);
                 messageInput.value = '';
-            }
-        });
- 
-        messageInput.addEventListener('keypress', async (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                const content = messageInput.value;
-                if (content.trim()) {
-            if (e.key === 'Enter') {
-                const content = messageInput.value.trim();
-                if (content) {
-                    await sendMessage(content);
-                    messageInput.value = '';
-                }
-            }
-        });
- 
-        sendBtn.addEventListener('click', async () => {
-            const content = messageInput.value;
-            if (content.trim()) {
-                await sendMessage(content);
-                messageInput.value = '';
                 messageInput.focus();
             }
-        });
- 
-        leaveBtn.addEventListener('click', () => {
-            leaveRoom();
-            loginPage.style.display = 'block';
-            chatPage.style.display = 'none';
-            currentRoom = null;
-            currentNickname = null;
-        });
- 
-        displayRoomCode.addEventListener('click', () => {
-            navigator.clipboard.writeText(currentRoom).then(() => {
-                showToast('房间号已复制到剪贴板');
-            }).catch(() => {
-                showToast('复制失败，请手动复制');
-            });
-        });
- 
-        nicknameInput.addEventListener('input', (e) => {
-            e.target.value = e.target.value.replace(/[<>]/g, '');
-        });
- 
-        roomCodeInput.addEventListener('input', (e) => {
-            e.target.value = e.target.value.replace(/\D/g, '').slice(0, 6);
-        });
- 
-        messageInput.addEventListener('input', () => {
-            messageInput.style.height = 'auto';
-            messageInput.style.height = Math.min(messageInput.scrollHeight, 120) + 'px';
-        });
- 
-        async function testDatabaseConnection() {
-            if (!isConfigured || !supabaseClient) return;
-            
-            try {
-                const { data, error } = await supabaseClient
-                    .from('rooms')
-                    .select('room_id')
-                    .limit(1);
-                
-                if (!error) {
-                    console.log('数据库连接测试成功');
-                    showToast('数据库连接成功');
-                } else {
-                    console.error('数据库连接测试失败:', error);
-                    showToast('数据库连接失败，请检查配置');
-                }
-            } catch (error) {
-                console.error('数据库连接异常:', error);
-                showToast('数据库连接异常');
-            }
         }
- 
+
+        sendBtn.addEventListener('click', handleSendMessage);
+        
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                handleSendMessage();
+            }
+        });
+
+        // 离开房间
+        leaveBtn.addEventListener('click', leaveRoom);
+
+        // 复制房间号
+        roomCodeDisplay.addEventListener('click', async () => {
+            if (currentRoom) {
+                await navigator.clipboard.writeText(currentRoom);
+                alert('房间号已复制！');
+            }
+        });
+
+        // ============================================
         // 初始化
+        // ============================================
         initSupabase();
-        setTimeout(testDatabaseConnection, 1000);
-    <\/script>
+    </script>
 </body>
 </html>
