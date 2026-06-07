@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>收款记录看板</title>
+    <!-- 引入 Tailwind CSS 用于快速美化样式 -->
+    <script src="https://cdn.tailwindcss.com";></script>
+    <!-- 引入 Supabase JS 客户端 -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js";></script>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3b82f6;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen p-4 md:p-8">
+
+    <div class="max-w-4xl mx-auto">
+        <!-- 标题区域 -->
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-bold text-gray-800">💰 收款记录看板</h1>
+            <button onclick="fetchPayments()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg shadow transition flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg"; class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd" />
+                </svg>
+                刷新
+            </button>
+        </div>
+
+        <!-- 统计卡片 -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                <p class="text-sm text-gray-500">今日收款</p>
+                <p class="text-2xl font-bold text-green-600" id="stat-today">¥0.00</p>
+            </div>
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                <p class="text-sm text-gray-500">本月收款</p>
+                <p class="text-2xl font-bold text-blue-600" id="stat-month">¥0.00</p>
+            </div>
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                <p class="text-sm text-gray-500">总笔数</p>
+                <p class="text-2xl font-bold text-gray-800" id="stat-count">0</p>
+            </div>
+        </div>
+
+        <!-- 数据表格 -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-gray-50 border-b border-gray-200 text-xs uppercase text-gray-500 font-semibold">
+                            <th class="p-4">时间</th>
+                            <th class="p-4">平台</th>
+                            <th class="p-4 text-right">金额</th>
+                            <th class="p-4 hidden md:table-cell">原始消息</th>
+                        </tr>
+                    </thead>
+                    <tbody id="payment-list" class="divide-y divide-gray-100 text-sm text-gray-700">
+                        <!-- 数据将在这里动态插入 -->
+                        <tr>
+                            <td colspan="4" class="p-8 text-center text-gray-400">
+                                <div class="loading-spinner"></div>
+                                <p>正在加载数据...</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- 分页/加载更多提示 -->
+            <div id="load-more-container" class="p-4 text-center hidden">
+                <button onclick="loadMore()" class="text-blue-500 hover:text-blue-700 font-medium">加载更多...</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ================= 配置区域 =================
+        // ⚠️ 请替换为你自己的 Supabase 项目 URL 和 Anon Key
+        const SUPABASE_URL = 'https://fedlhohopipeyrmdctfr.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZlZGxob2hvcGlwZXlybWRjdGZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyNTMxMTgsImV4cCI6MjA5NTgyOTExOH0.aQ5h9c11gObhvvCJpehPwRk7tn_7vfjtPMuJz7oXMDI';
+        // ===========================================
+
+        // 初始化 Supabase 客户端
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let currentPage = 0;
+        const pageSize = 20;
+        let allPayments = []; // 用于前端简单统计，数据量大时建议后端聚合
+
+        // 页面加载完成后立即获取数据
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchPayments();
+        });
+
+        async function fetchPayments(reset = true) {
+            if (reset) {
+                currentPage = 0;
+                allPayments = [];
+                document.getElementById('payment-list').innerHTML = `
+                    <tr><td colspan="4" class="p-8 text-center text-gray-400">
+                        <div class="loading-spinner"></div><p>正在加载数据...</p>
+                    </td></tr>`;
+            }
+
+            try {
+                // 构建查询：按创建时间倒序排列
+                let query = supabase
+                    .from('payments')
+                    .select('*')
+                    .order('created_at', { ascending: false })
+                    .range(currentPage * pageSize, (currentPage + 1) * pageSize - 1);
+
+                const { data, error } = await query;
+
+                if (error) {
+                    throw error;
+                }
+
+                if (reset) {
+                    allPayments = data || [];
+                    renderTable(allPayments);
+                    calculateStats(allPayments);
+                } else {
+                    allPayments = [...allPayments, ...(data || [])];
+                    appendToTable(data);
+                }
+
+                // 控制“加载更多”按钮的显示
+                const loadMoreBtn = document.getElementById('load-more-container');
+                if (data && data.length === pageSize) {
+                    loadMoreBtn.classList.remove('hidden');
+                } else {
+                    loadMoreBtn.classList.add('hidden');
+                }
+
+            } catch (err) {
+                console.error('Error fetching data:', err);
+                document.getElementById('payment-list').innerHTML = `
+                    <tr><td colspan="4" class="p-8 text-center text-red-500">
+                        加载失败: ${err.message}<br>
+                        <span class="text-xs text-gray-400">请检查控制台了解详细信息</span>
+                    </td></tr>`;
+            }
+        }
+
+        function loadMore() {
+            currentPage++;
+            fetchPayments(false);
+        }
+
+        function renderTable(payments) {
+            const tbody = document.getElementById('payment-list');
+            tbody.innerHTML = '';
+
+            if (!payments || payments.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="p-8 text-center text-gray-400">暂无收款记录</td></tr>`;
+                return;
+            }
+
+            payments.forEach(payment => {
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-50 transition';
+                
+                // 格式化时间
+                const date = new Date(payment.created_at);
+                const timeStr = date.toLocaleString('zh-CN', { 
+                    month: '2-digit', 
+                    day: '2-digit', 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                });
+
+                // 平台标签颜色
+                const platformClass = payment.platform === '微信' 
+                    ? 'bg-green-100 text-green-700 border-green-200' 
+                    : 'bg-blue-100 text-blue-700 border-blue-200';
+
+                row.innerHTML = `
+                    <td class="p-4 whitespace-nowrap text-gray-600">${timeStr}</td>
+                    <td class="p-4">
+                        <span class="px-2 py-1 rounded-md text-xs font-medium border ${platformClass}">
+                            ${payment.platform || '未知'}
+                        </span>
+                    </td>
+                    <td class="p-4 text-right font-bold text-gray-800">
+                        ¥${parseFloat(payment.amount).toFixed(2)}
+                    </td>
+                    <td class="p-4 hidden md:table-cell text-gray-400 text-xs truncate max-w-xs" title="${payment.message_raw}">
+                        ${payment.message_raw || '-'}
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function appendToTable(payments) {
+            const tbody = document.getElementById('payment-list');
+            // 移除可能的“暂无数据”行
+            if (tbody.children.length > 0 && tbody.children@ref[0].innerText.includes('暂无')) {
+                tbody.innerHTML = '';
+            }
+            
+            // 复用 renderTable 的逻辑有点浪费，这里简单追加
+            payments.forEach(payment => {
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-50 transition animate-fade-in';
+                
+                const date = new Date(payment.created_at);
+                const timeStr = date.toLocaleString('zh-CN', { 
+                    month: '2-digit', 
+                    day: '2-digit', 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                });
+
+                const platformClass = payment.platform === '微信' 
+                    ? 'bg-green-100 text-green-700 border-green-200' 
+                    : 'bg-blue-100 text-blue-700 border-blue-200';
+
+                row.innerHTML = `
+                    <td class="p-4 whitespace-nowrap text-gray-600">${timeStr}</td>
+                    <td class="p-4">
+                        <span class="px-2 py-1 rounded-md text-xs font-medium border ${platformClass}">
+                            ${payment.platform || '未知'}
+                        </span>
+                    </td>
+                    <td class="p-4 text-right font-bold text-gray-800">
+                        ¥${parseFloat(payment.amount).toFixed(2)}
+                    </td>
+                    <td class="p-4 hidden md:table-cell text-gray-400 text-xs truncate max-w-xs" title="${payment.message_raw}">
+                        ${payment.message_raw || '-'}
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function calculateStats(payments) {
+            const now = new Date();
+            const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+
+            let todaySum = 0;
+            let monthSum = 0;
+
+            payments.forEach(p => {
+                const pDate = new Date(p.created_at);
+                const amount = parseFloat(p.amount) || 0;
+
+                if (pDate >= todayStart) {
+                    todaySum += amount;
+                }
+                if (pDate >= monthStart) {
+                    monthSum += amount;
+                }
+            });
+
+            document.getElementById('stat-today').innerText = `¥${todaySum.toFixed(2)}`;
+            document.getElementById('stat-month').innerText = `¥${monthSum.toFixed(2)}`;
+            document.getElementById('stat-count').innerText = allPayments.length; // 注意：这里只显示当前加载的数量，如需总数需单独查询 count
+        }
+    </script>
+</body>
+</html>
