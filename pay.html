@@ -1,3 +1,5 @@
+
+(无主题)
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -205,7 +207,7 @@
         function appendToTable(payments) {
             const tbody = document.getElementById('payment-list');
             // 移除可能的“暂无数据”行
-            if (tbody.children.length > 0 && tbody.children@ref[0].innerText.includes('暂无')) {
+            if (tbody.children.length > 0 && tbody.children[0].innerText.includes('暂无')) {
                 tbody.innerHTML = '';
             }
             
